@@ -3,8 +3,13 @@ from flask import request, session
 from helpers.database import *
 from helpers.hashpass import *
 from helpers.mailer import *
+from helpers.nlp import *
 from bson import json_util, ObjectId
+from datetime import datetime
+import calendar
 import json
+import numpy as np
+import re
 
 def checkloginusername():
     username = request.form["username"]
@@ -25,7 +30,7 @@ def checkloginpassword():
         return "correct"
     else:
         return "wrong"
-    
+
 
 def checkusername():
     username = request.form["username"]
@@ -38,6 +43,12 @@ def checkusername():
 def registerUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
+    fields.append("posts")
+    values.append([])
+    fields.append("scores")
+    values.append([])
+    fields.append("date")
+    values.append([])
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
@@ -46,13 +57,76 @@ def registerUser():
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     print("Done")
 
-def addPost():
-    fields = [k for k in request.form]                                      
-    values = [request.form[k] for k in request.form]
-    data = dict(zip(fields, values))
-    user_data = json.loads(json_util.dumps(data))
-    db.users.insert(user_data)
+def addPost(user,post):
+    print(post)
+    score = get_score(post)
+    today = datetime.today()
+    db.users.update({"username": user}, {"$push": {"posts": [post],"scores":[score],"date":[today]}})
     print("Post Added")
 
+def getPost(username):
+    print("Posts retrieved")
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    items=userDoc["posts"]
+    return items
+
+def getScores(username):
+    print("Posts retrieved")
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    scores=userDoc["scores"]
+    return scores
+
+def getDates(username):
+    print("Dates Retrieved")
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    dates = userDoc["date"]
+    days=[]
+    formatted_dates=[]
+    for i in dates:
+        days.append(calendar.day_name[i[0].weekday()])
+        # temp = i[0].day+ ' / '+i[0].month+' / '+[0].year
+        formatted_dates.append(i[0].strftime('%b %d, %Y'))
+    return formatted_dates
+
+def getDays(username):
+    print("Days Retrieved")
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    dates = userDoc["date"]
+    days=[]
+    for i in dates:
+        days.append(calendar.day_name[i[0].weekday()])
+       
+    return days
 
 
+    
+def getScoresForChart(username):
+    user = db.users.find_one({"username":session["username"]})
+    print(session["username"])
+    # print(user)
+    scores = user["scores"]
+    return_score = np.array(scores).flatten().tolist()
+    rounded_scores = [round(num) for num in return_score]
+    print(rounded_scores)
+    return rounded_scores[-7:]
+
+def getScoresForPieChart(username):
+    user = db.users.find_one({"username":session["username"]})
+    print(session["username"])
+    # print(user)
+    scores = user["scores"]
+    return_score = np.array(scores).flatten().tolist()
+    rounded_scores = [round(num) for num in return_score]
+    print(rounded_scores)
+    happy_elements = [element for element in rounded_scores if element >= 90]
+    med_elements = [element for element in rounded_scores if element >= 70 and element < 90]
+    unhappy_elements = [element for element in rounded_scores if element < 70]
+    happy_score = len(happy_elements)
+    med_score = len(med_elements)
+    unhappy_score = len(unhappy_elements)
+    pie_chart_data = [happy_score,med_score,unhappy_score]
+    return pie_chart_data

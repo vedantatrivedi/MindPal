@@ -1,13 +1,28 @@
 from flask import render_template, request, redirect, url_for, session
 from app import app
 from model import *
+from functools import reduce
+import numpy as np
+from operator import add
 
-@app.route('/', methods=["GET"])
+@app.route('/', methods=["GET","POST"])
 def home():
-    if "username" in session:
-        return render_template('index.html',username = session["username"])
+    if request.method == "GET":
+         if "username" in session:
+            #  posts = getPost(session["username"])
+             print("Inside home() with username " + session["username"])
+            #  print(posts)
+             return render_template('index.html',username = session["username"], 
+             posts = getPost(session["username"]),scores = getScores(session["username"]), days=getDays(session["username"]), dates=getDates(session["username"]))
+         else:
+            return render_template('login.html')
     else:
-        return render_template('login.html')
+        content = request.form.get("ckeditor")
+        addPost(session["username"],content)
+        getPost(session["username"])
+        print(getPost(session["username"]))
+        return render_template('index.html',username = session["username"], 
+             posts = getPost(session["username"]),scores = getScores(session["username"]), dates=getDates(session["username"]))
 
 # Register new user
 @app.route('/register', methods=["GET", "POST"])
@@ -22,6 +37,14 @@ def register():
 @app.route('/checkusername', methods=["POST"])
 def check():
     return checkusername()
+
+@app.route('/addPost',methods = ["POST"])
+def addPosts():
+    return addPost()
+
+# @app.route('/getPosts',methods = ["GET"])
+# def getPosts():
+#     return getPost(session["username"])
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
@@ -75,7 +98,9 @@ def cards():
 #Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
-    return render_template("charts.html")
+    scores = getScoresForChart(session["username"])
+    labels= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    return render_template("charts.html",scores = scores,labels = labels,user=session["username"])
 
 #Tables Page
 @app.route('/tables', methods=["GET"])
@@ -101,3 +126,5 @@ def utilitiescolor():
 @app.route('/utilities-other', methods=["GET"])
 def utilitiesother():
     return render_template("utilities-other.html")
+
+
