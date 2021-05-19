@@ -22,16 +22,16 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [P
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/vedantatrivedi/Muse.git
+git clone https://github.com/vedantatrivedi/Muse.git
 
 # Go into the repository
-$ cd Muse-master
+cd Muse
 
 # Install dependencies
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Run the app
-$ python3 app.py
+python3 app.py
 ```
 
 
