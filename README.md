@@ -13,13 +13,12 @@
 
 </p>
 
-![Alt Text](https://i.ibb.co/whQLWr9/I01g09-L4p0e-BQufjs-F3f-Yw-LXXKGr-Fsx2-Ez-Lo9-N1r-HAZz-MDIEAn-R0-GLXefp5-HH1k-ZBGU-w1200-h630-p.gif)
-
+[![Example GIF](https://s3.gifyu.com/images/Webp.net-gifmaker8cc94ebb0cf95ecf.gif)](https://gifyu.com/image/DvUi)
 
 
 ## How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Python 3 and above](https://www.python.org/downloads/) installed on your computer. From your command line:
 
 ```bash
 # Clone this repository
