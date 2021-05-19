@@ -18,7 +18,7 @@
 
 ## How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Python 3 and above](https://www.python.org/downloads/) installed on your computer. From your command line:
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Python 3 or above](https://www.python.org/downloads/) installed on your computer. From your command line:
 
 ```bash
 # Clone this repository
