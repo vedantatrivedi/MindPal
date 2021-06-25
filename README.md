@@ -27,7 +27,7 @@ git clone https://github.com/vedantatrivedi/Muse.git
 # Go into the repository
 cd Muse
 
-# Install dependencies
+# Install Dependencies
 pip3 install -r requirements.txt
 
 # Run the app
