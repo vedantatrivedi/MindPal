@@ -32,6 +32,8 @@ def register():
     elif request.method == "POST":
         registerUser()
         return redirect(url_for("login"))
+    
+
 
 #Check if email already exists in the registratiion page
 @app.route('/checkusername', methods=["POST"])
@@ -54,6 +56,17 @@ def login():
             return render_template("login.html")
         else:
             return redirect(url_for("home"))
+
+@app.route('/userlogin', methods=["GET","POST"])
+def userlogin():
+    if request.method == "GET":
+        return render_template("userlogin.html")
+    else:
+        scores = getScoresForChart("test")
+        labels= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+        return render_template("trustedUserDashboard.html",scores = scores,labels = labels)
+
+
 
 
 @app.route('/checkloginusername', methods=["POST"])
@@ -113,14 +126,20 @@ def utilitiesanimation():
     return render_template("utilities-animation.html")
 
 #Utilities-border
-@app.route('/utilities-border', methods=["GET"])
+@app.route('/utilities-border', methods=["GET","POST"])
 def utilitiesborder():
     return render_template("utilities-border.html")
 
 #Utilities-color
-@app.route('/utilities-color', methods=["GET"])
+@app.route('/utilities-color', methods=["GET","POST"])
 def utilitiescolor():
-    return render_template("utilities-color.html")
+    
+    if request.method == "GET":
+        return render_template("utilities-color.html")
+    elif request.method == "POST":
+        addTrustedUser(session["username"])
+        return render_template('index.html',username = session["username"], 
+             posts = getPost(session["username"]),scores = getScores(session["username"]), dates=getDates(session["username"]))
 
 #utilities-other
 @app.route('/utilities-other', methods=["GET"])

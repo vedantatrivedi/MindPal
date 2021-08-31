@@ -25,7 +25,6 @@ def checkloginpassword():
     password = request.form["password"]
     hashpassword = getHashed(password)
     if hashpassword == check["password"]:
-        sendmail(subject="Login on Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=check["email"], body="You successfully logged in on Flask Admin Boilerplate")
         session["username"] = username
         return "correct"
     else:
@@ -54,8 +53,20 @@ def registerUser():
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     db.users.insert(user_data)
-    sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     print("Done")
+
+def addTrustedUser(username):
+    fields = [k for k in request.form]                                      
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    user_data = json.loads(json_util.dumps(data))
+    fields.append("users")
+    values.append(username)
+    db.trusted.insert(user_data)
+    trustedUser = request.form.get("username")
+    db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
+    print("Done")
+    
 
 def addPost(user,post):
     print(post)
@@ -69,6 +80,7 @@ def getPost(username):
     myquery = { "username": username }
     userDoc = db.users.find_one(myquery)
     items=userDoc["posts"]
+    # print(items[-1])
     return items
 
 def getScores(username):
@@ -105,8 +117,8 @@ def getDays(username):
 
     
 def getScoresForChart(username):
-    user = db.users.find_one({"username":session["username"]})
-    print(session["username"])
+    user = db.users.find_one({"username":username})
+    # print(session["username"])
     # print(user)
     scores = user["scores"]
     return_score = np.array(scores).flatten().tolist()

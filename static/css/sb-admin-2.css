@@ -11052,6 +11052,13 @@ a:focus {
   margin-top: 6%;
   margin-bottom: 5%;
 }
+.bg-addUser-image {
+  background: url("../img/illus.svg");
+  background-position: center;
+  background-size: cover;
+  margin-top: 6%;
+  margin-bottom: 5%;
+}
 
 .bg-password-image {
   background: url("../img/undraw_forgot_password_gi2d.svg");

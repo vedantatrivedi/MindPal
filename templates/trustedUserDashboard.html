@@ -1,0 +1,311 @@
+
+
+<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment-with-locales.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.css" />
+<link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="static/css/sb-admin-2.css" rel="stylesheet">
+  <!-- Bootstrap core JavaScript-->
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/moment.min.js'></script>
+  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery.min.js'></script>
+  <script src="http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery-ui.custom.min.js"></script>
+  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
+  <!-- Core plugin JavaScript-->
+  <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="static/js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.css" />
+
+<script type="text/javascript">
+  console.log("Inside script 1");
+    var defaultEvents = [
+    {
+        // Just an event
+        title: 'Test Event',
+        start: '2020-09-02',
+        className: 'scheduler_basic_event',
+        color:'black'
+    },
+];
+// Any value represanting monthly repeat flag
+var REPEAT_MONTHLY = 1;
+// Any value represanting yearly repeat flag
+var REPEAT_YEARLY = 2;
+    
+$('#calendar').fullCalendar({
+    header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+    },
+        editable: true,
+        // defaultDate: '2017-02-16',
+        eventSources: [defaultEvents],
+        dayRender: function( date, cell ) {
+        // Get all events
+        var events = $('#calendar').fullCalendar('clientEvents').length ? $('#calendar').fullCalendar('clientEvents') : defaultEvents;
+    }
+});
+</script>
+<script src="static/vendor/chart.js/Chart.min.js"></script>
+  <script type='text/javascript'>
+  console.log("Inside this script");
+ 
+  // Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+// function number_format(number, decimals, dec_point, thousands_sep) {
+//   // *     example: number_format(1234.56, 2, ',', ' ');
+//   // *     return: '1 234,56'
+//   number = (number + '').replace(',', '').replace(' ', '');
+//   var n = !isFinite(+number) ? 0 : +number,
+//     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+//     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+//     dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+//     s = '',
+//     toFixedFix = function(n, prec) {
+//       var k = Math.pow(10, prec);
+//       return '' + Math.round(n * k) / k;
+//     };
+//   // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+//   s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+//   if (s[0].length > 3) {
+//     s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+//   }
+//   if ((s[1] || '').length < prec) {
+//     s[1] = s[1] || '';
+//     s[1] += new Array(prec - s[1].length + 1).join('0');
+//   }
+//   return s.join(dec);
+// }
+console.log('{{scores|tojson}}');
+window.onload = function() {
+
+// Area Chart Example
+var ctx = document.getElementById("myAreaChart");
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [{% for item in labels %}
+"{{item}}",
+{% endfor %}],
+    datasets: [{
+      label: "Emotion Score",
+      lineTension: 0.3,
+      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      borderColor: "rgba(78, 115, 223, 1)",
+      pointRadius: 3,
+      pointBackgroundColor: "rgba(78, 115, 223, 1)",
+      pointBorderColor: "rgba(78, 115, 223, 1)",
+      pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+      pointHitRadius: 10,
+      pointBorderWidth: 2,
+      data: [{% for item in scores %}
+{{item}},
+{% endfor %}],
+      // data:[10,20,30,40,50,60,70],
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 10,
+        right: 25,
+        top: 25,
+        bottom: 0
+      }
+    },
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'date'
+        },
+        gridLines: {
+          display: false,
+          drawBorder: false
+        },
+        ticks: {
+          maxTicksLimit: 7
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          maxTicksLimit: 10,
+          padding: 10,
+          // Include a dollar sign in the ticks
+          // callback: function(value, index, values) {
+          //   return value;
+          // }
+        },
+        gridLines: {
+          color: "rgb(234, 236, 244)",
+          zeroLineColor: "rgb(234, 236, 244)",
+          drawBorder: false,
+          borderDash: [2],
+          zeroLineBorderDash: [2]
+        }
+      }],
+    },
+    legend: {
+      display: false
+    },
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      intersect: false,
+      mode: 'index',
+      caretPadding: 10,
+      // callbacks: {
+      //   label: function(tooltipItem, chart) {
+      //     var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+      //     return datasetLabel + ': $' + tooltipItem.yLabel;
+      //   }
+      // }
+    }
+  }
+});
+}
+
+  </script>
+  <style type="text/css">
+    #calendar {
+        width:80%;
+        margin: 20px auto;
+    }
+</style>
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <!-- <h1 class="h3 mb-2 text-gray-800">Let's see how much you've progressed!</h1> -->
+          <p class="mb-4">Here is an overview of test's thoughts in the past few days</a>.</p>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-xl-8 col-lg-8">
+
+              <!-- Area Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Overview of the last 7 days</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+            </div> 
+
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-4">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Overview of the month</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4">
+                    <div id="cal-heatmap"></div>
+                      <script type="text/javascript">
+                        var cal = new CalHeatMap();
+                        cal.init({
+                          itemSelector: "#cal-heatmap",
+                          domain: "month",
+                          subDomain: "x_day",
+                          data: "static/datas-years.json",
+                          start: new Date(2000, 3, 5),
+                          cellSize: 17,
+                          cellPadding: 5,
+                          domainGutter: 20,
+                          range: 2,
+                          domainDynamicDimension: false,
+                          previousSelector: "#example-g-PreviousDomain-selector",
+                          nextSelector: "#example-g-NextDomain-selector",
+                          domainLabelFormat: function(date) {
+                            moment.lang("en");
+                            return moment(date).format("MMMM").toUpperCase();
+                          },
+                          subDomainTextFormat: "%d",
+                          legend: [20, 40, 60, 80],
+                          legendColors: {
+                            min: "#efefef",
+                            max: "steelblue",
+                            empty: "white"
+                            // Will use the CSS for the missing keys
+                          }
+
+                        });
+                      </script>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+      <div class="text-center">
+        <a class="small" href="/login">Go back</a>
+      </div>
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Muse - 2021</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
+  <!-- Page level custom scripts -->
+  <!-- <script src="static/js/demo/chart-area-demo.js"></script> -->
+  <!-- <script src="static/js/demo/chart-pie-demo.js"></script> -->
+  <!-- <script src="static/js/demo/chart-bar-demo.js"></script> -->
+
+</body>
+
+</html>
