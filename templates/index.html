@@ -81,11 +81,15 @@
           <div class="card shadow mb-4">
             <!-- Card Header - Accordion -->
             <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-              <h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6>
+              <div class="row justify-content-between">
+                <div class="col-sm-9"><h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6></div>
+                <!-- <div class="col-lg-1 col-md-0"></div> -->
+                <div class="btn align-self-end col-sm-auto mr-2" data-toggle="modal" data-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div>
+              </div>
             </a>
 
             <div class="text-right">
-              <div class="btn my-2 mx-2" data-toggle="modal" data-target="#prompts" style="background:#fff1ed;color:#761137;"><h5>Prompts</h5></div>
+              
             </div>
 
             <!-- Card Content - Collapse -->
@@ -164,24 +168,21 @@
 <div class="modal fade" id="prompts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-<!--        <div class="modal-header">
-          <h5 class="modal-title">Self Reflection</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div> -->
+
         <div class="modal-body m-2" style="font-size: 1.25rem">
 
           <div class="text-center mb-3">
             <h2>Untangle your thoughts</h2>
           </div>
-      <div class="btn" data-toggle="modal" data-target="#self_reflection" style="background:#fff1ed;color:#761137;">Self Reflection</div>
-      <div class="btn" data-toggle="modal" data-target="#gratitude" style="background:#fff1ed;color:#761137;">Gratitude</div>
-      <div class="btn" data-toggle="modal" data-target="#self_love" style="background:#fff1ed;color:#761137;">Self Love</div>
-      <div class="btn" data-toggle="modal" data-target="#anxiety" style="background:#fff1ed;color:#761137;">Anxiety</div>
-      <div class="btn" data-toggle="modal" data-target="#random" style="background:#fff1ed;color:#761137;">Random</div>
+
+          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_reflection" style="background:#fff1ed;color:#df4e61;">Self Reflection</div>
+          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#gratitude" style="background:#fff1ed;color:#df4e61;">Gratitude</div>
+          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_love" style="background:#fff1ed;color:#df4e61;">Self Love</div>
+          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#anxiety" style="background:#fff1ed;color:#df4e61;">Anxiety</div>
+          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#random" style="background:#fff1ed;color:#df4e61;">Random</div>
 
       </div>
+
     </div>
   </div>
 
@@ -209,11 +210,11 @@
       </div>
       <div class="row mt-2">
         <div class="col-5 text-left">
-        <div class="btn" style="background:#761137;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += ('Self Reflection  <br>' + $('.self_reflection_content')[0].innerHTML)">Add to Space</div>
+        <div class="btn" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += ('Self Reflection  <br>' + $('.self_reflection_content')[0].innerHTML)">Add to Space</div>
         </div>
         <div class="col-2"></div>
         <div class="col-5 text-right">
-          <div class="btn" style="background:#761137;color:#fff1ed;" data-toggle="modal" data-target="#self_reflection" >Back to Self</div>
+          <div class="btn" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_reflection" >Back to Self</div>
         </div>
       </div>
         </div>
@@ -244,11 +245,11 @@
       </div>
       <div class="row mt-2">
         <div class="col-5 text-left">
-        <div class="btn" style="background:#761137;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Gratitude <br>' + $('.gratitude_content')[0].innerHTML )">Add to Space</div>
+        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Gratitude <br>' + $('.gratitude_content')[0].innerHTML )">Add to Space</div>
         </div>
         <div class="col-2"></div>
         <div class="col-5 text-right">
-          <div class="btn" style="background:#761137;color:#fff1ed;" data-toggle="modal" data-target="#gratitude">Back to Self</div>
+          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#gratitude">Back to Self</div>
         </div>
       </div>
         </div>
@@ -278,11 +279,11 @@
       </div>
       <div class="row mt-2">
         <div class="col-5 text-left">
-        <div class="btn" style="background:#761137;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Self Love <br>' + $('.self_love_content')[0].innerHTML )">Add to Space</div>
+        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Self Love <br>' + $('.self_love_content')[0].innerHTML )">Add to Space</div>
         </div>
         <div class="col-2"></div>
         <div class="col-5 text-right">
-          <div class="btn" style="background:#761137;color:#fff1ed;" data-toggle="modal" data-target="#self_love">Back to Self</div>
+          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_love">Back to Self</div>
         </div>
       </div>
         </div>
@@ -306,11 +307,11 @@
       </div>
       <div class="row mt-2">
         <div class="col-5 text-left">
-        <div class="btn" style="background:#761137;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += $('.random_content')[0].innerHTML">Add to Space</div>
+        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += $('.random_content')[0].innerHTML">Add to Space</div>
         </div>
         <div class="col-2"></div>
         <div class="col-5 text-right">
-          <div class="btn" style="background:#761137;color:#fff1ed;" data-toggle="modal" data-target="#random">Back to Self</div>
+          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#random">Back to Self</div>
         </div>
       </div>
         </div>
@@ -330,7 +331,7 @@
         <div class="modal-body m-2" style="font-size: 1.10rem">
           <div class="anxiety_content">
         1. Without thinking twice, write down everything that's on your mind.<br>
-        2. Finish the sentence, "Right now, I am ", hen finish the sentence, "I want to be ".<br>
+        2. Finish the sentence "Right now, I am ..", then finish the sentence "I want to be ..".<br>
         3. If something is making you anxious, what triggered it?<br>
         4. What am I holding onto that I need to release? How can I turn those it into something positive?
         5. Choose one problem that has been causing you anxiety lately, and ask yourself questions about it, like a friend.
@@ -341,11 +342,11 @@
       </div>
       <div class="row mt-2"><br>
         <div class="col-5 text-left">
-        <div class="btn" style="background:#761137;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=('Anxiety <br>' + $('.anxiety_content')[0].innerHTML)">Add to Space</div>
+        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=('Anxiety <br>' + $('.anxiety_content')[0].innerHTML)">Add to Space</div>
         </div>
         <div class="col-2"></div>
         <div class="col-5 text-right">
-          <div class="btn" style="background:#761137;color:#fff1ed;" data-toggle="modal" data-target="#anxiety">Back to Self</div>
+          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#anxiety">Back to Self</div>
         </div>
       </div>
         </div>
