@@ -24,7 +24,6 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 @app.route('/', methods=["GET"])
 def home():
 
-    print(session)
     if "username" in session:
         posts = getPost(session["username"])
         print("Inside home() with username " + session["username"])
@@ -40,8 +39,9 @@ def register():
         return render_template("register.html")
     elif request.method == "POST":
 
-        if('credentials' in session):
-            email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], session['credentials']['refresh_token'])
+        if(checkOAuthToken()):
+            token = getOAuthToken()
+            email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
             
         registerUser()
         return redirect(url_for("login"))
@@ -189,14 +189,14 @@ def utilitiesother():
     return render_template("utilities-other.html")
 
 
-@app.route('/send_mail', methods=["GET"])
+# @app.route('/send_mail', methods=["GET"])
 
-def send_mail():
-    email_service.send_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com',
-              'A mail from you from Python',
-              '<b>A mail from you from Python</b><br>', session['credentials']['refresh_token'])
+# def send_mail():
+#     email_service.send_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com',
+#               'A mail from you from Python',
+#               '<b>A mail from you from Python</b><br>', session['credentials']['refresh_token'])
 
-    return ""
+#     return ""
 
 
 @app.route('/authorize', methods=["GET"])
@@ -220,14 +220,8 @@ def authorize():
       include_granted_scopes='true')
 
     if(checkOAuthToken()):
-        token = getOAuthToken()
-        print("Token is :", token)
-        email_service.send_welcome_mail('dornumofficial@gmail.com', session['email'], session['username'], token['refresh_token'])
-
         return redirect('/')
-
     else:
-        # Store the state so the callback can verify the auth server response.
         session['state'] = state
     
     return redirect(authorization_url)
@@ -244,7 +238,7 @@ def oauth2callback():
 
     # Use the authorization server's response to fetch the OAuth 2.0 tokens.
     authorization_response = request.url
-    flow.fetch_token(authorization_response=authorization_response)
+    flow.fetch_token(authorization_response = authorization_response)
 
 
     # Store credentials in the session.
@@ -252,7 +246,6 @@ def oauth2callback():
     #              credentials in a persistent database instead.
 
     credentials = credentials_to_dict(flow.credentials)
-    session['credentials'] = credentials
     putOAuthToken(credentials)
 
     return redirect('/')
@@ -264,58 +257,3 @@ def credentials_to_dict(credentials):
           'client_id': credentials.client_id,
           'client_secret': credentials.client_secret,
           'scopes': credentials.scopes}
-
-
-
-# @app.route('/test', methods=["GET"])
-# def test_api_request():
-#   if 'credentials' not in session:
-#     return redirect('authorize')
-
-#   # Load credentials from the session.
-#   credentials = google.oauth2.credentials.Credentials(
-#       **session['credentials'])
-
-#   drive = googleapiclient.discovery.build(
-#       API_SERVICE_NAME, API_VERSION, credentials=credentials)
-
-#   files = drive.files().list().execute()
-
-#   # Save credentials back to session in case access token was refreshed.
-#   # ACTION ITEM: In a production app, you likely want to save these
-#   #              credentials in a persistent database instead.
-#   session['credentials'] = credentials_to_dict(credentials)
-
-#   return jsonify(**files)
-
-
-
-# @app.route('/revoke', methods=["GET"])
-# def revoke():
-#   if 'credentials' not in session:
-#     return ('You need to <a href="/authorize">authorize</a> before ' +
-#             'testing the code to revoke credentials.')
-
-#   credentials = google.oauth2.credentials.Credentials(
-#     **session['credentials'])
-
-#   revoke = requests.post('https://oauth2.googleapis.com/revoke',
-#       params={'token': credentials.token},
-#       headers = {'content-type': 'application/x-www-form-urlencoded'})
-
-#   status_code = getattr(revoke, 'status_code')
-#   if status_code == 200:
-#     return('Credentials successfully revoked.' + print_index_table())
-#   else:
-#     return('An error occurred.' + print_index_table())
-
-
-# @app.route('/clear', methods=["GET"])
-# def clear_credentials():
-#   if 'credentials' in session:
-#     del session['credentials']
-#   return ('Credentials have been cleared.<br><br>' +
-#           print_index_table())
-
-
-
