@@ -84,13 +84,13 @@
               <h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6>
             </a>
             <!-- Card Content - Collapse -->
-              <form class = "user" method="POST">
+              <form class="user" method="POST" action="/addPost" >
                   <div class="collapse show" id="collapseCardExample">
                     <div class="card-body">
-                          {{ ckeditor.create() }}
 
+                      {{ ckeditor.create() }}
                       <!-- <textarea name ="content" id="content"></textarea> -->
-                      <button type="submit"  id="button" class="btn btn-primary btn-user btn-block">Add post</button>
+                      <button id="SubmitPostButton" class="btn btn-primary btn-user btn-block" name ="journal_entry">Add post</button>
                     </div>
                   </div>
               </form>
@@ -116,7 +116,7 @@
                     <!-- Card Body -->
                     <div class="card-body">
                       <!-- <div class="chart-pie pt-4 pb-2"> -->
-                        <iframe srcdoc="{{post[0]}}" style="width:100%"></iframe>
+                        <iframe class="font-weight-bold text-primary myFrame" srcdoc="{{post[0]}}" style='width:100%;border:0;'></iframe>
                     </div>
                   </div>
                   {% endfor %}
@@ -171,7 +171,32 @@
   <!-- Page level plugins -->
   <!-- <script src="static/vendor/chart.js/Chart.min.js"></script> -->
   <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+  <script>
 
+      var frame = document.getElementsByClassName('myFrame');
+      for (let i = 0; i < frame.length; i++) { 
+            frame[i].onload = function () {
+            var body = frame[i].contentWindow.document.querySelector('body');
+            body.style.fontFamily = "'Nunito', sans-serif";
+            body.style.color = "#df4e61";
+        };
+      }
+
+      $("form").submit(function(e){
+        e.preventDefault();
+      });
+
+
+      $("#SubmitPostButton").click(function() {
+          var data = $("form:input").serializeArray();
+          $.post( $("#myForm").attr("action"),data, function(info) {
+              $("#result").html(info); 
+          });
+      });
+
+
+
+  </script>
   <!-- Page level custom scripts -->
   <!-- <script src="static/js/demo/chart-area-demo.js"></script> -->
   <!-- <script src="static/js/demo/chart-pie-demo.js"></script> -->

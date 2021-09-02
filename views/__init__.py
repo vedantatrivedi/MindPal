@@ -1,28 +1,37 @@
 from flask import render_template, request, redirect, url_for, session
 from app import app
 from model import *
+from model import email_service
 from functools import reduce
 import numpy as np
 from operator import add
+import json
 
-@app.route('/', methods=["GET","POST"])
+import os
+import requests
+
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+
+
+CLIENT_SECRETS_FILE = "client_secret.json"
+
+# This OAuth 2.0 access scope allows for full read/write access to the
+# authenticated user's account and requires requests to use an SSL connection.
+SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.send", "https://www.googleapis.com/auth/drive.metadata.readonly"]
+
+@app.route('/', methods=["GET"])
 def home():
-    if request.method == "GET":
-         if "username" in session:
-            #  posts = getPost(session["username"])
-             print("Inside home() with username " + session["username"])
-            #  print(posts)
-             return render_template('index.html',username = session["username"], 
-             posts = getPost(session["username"]),scores = getScores(session["username"]), days=getDays(session["username"]), dates=getDates(session["username"]))
-         else:
-            return render_template('login.html')
-    else:
-        content = request.form.get("ckeditor")
-        addPost(session["username"],content)
-        getPost(session["username"])
-        print(getPost(session["username"]))
+
+    print(session)
+    if "username" in session:
+        posts = getPost(session["username"])
+        print("Inside home() with username " + session["username"])
         return render_template('index.html',username = session["username"], 
-             posts = getPost(session["username"]),scores = getScores(session["username"]), dates=getDates(session["username"]))
+            posts = getPost(session["username"]),scores = getScores(session["username"]), days=getDays(session["username"]), dates=getDates(session["username"]))
+    else:
+        return render_template('login.html')
 
 # Register new user
 @app.route('/register', methods=["GET", "POST"])
@@ -30,10 +39,13 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
+
+        if('credentials' in session):
+            email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], session['credentials']['refresh_token'])
+            
         registerUser()
         return redirect(url_for("login"))
     
-
 
 #Check if email already exists in the registratiion page
 @app.route('/checkusername', methods=["POST"])
@@ -42,11 +54,42 @@ def check():
 
 @app.route('/addPost',methods = ["POST"])
 def addPosts():
-    return addPost()
 
-# @app.route('/getPosts',methods = ["GET"])
-# def getPosts():
-#     return getPost(session["username"])
+    response = {
+      'status': 400,
+    }
+
+    try:
+        addPost(session['username'], request.form['ckeditor'])
+        response = {
+          'status': 201,
+        }
+
+    except:
+        pass
+
+    return response
+    
+@app.route('/getPosts', methods = ["Get"])
+def getPosts():
+    
+    response = {
+      'status': 400,
+      'body'  : '',
+    }
+
+    try:
+        response = {
+          'status': 200,
+          'body'  : json.dumps(getPost(session["username"])),
+        }
+    except:
+        pass
+    
+
+    return response
+
+
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
@@ -65,7 +108,6 @@ def userlogin():
         scores = getScoresForChart("test")
         labels= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         return render_template("trustedUserDashboard.html",scores = scores,labels = labels)
-
 
 
 
@@ -145,5 +187,137 @@ def utilitiescolor():
 @app.route('/utilities-other', methods=["GET"])
 def utilitiesother():
     return render_template("utilities-other.html")
+
+
+@app.route('/send_mail', methods=["GET"])
+
+def send_mail():
+    email_service.send_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com',
+              'A mail from you from Python',
+              '<b>A mail from you from Python</b><br>', session['credentials']['refresh_token'])
+
+    return ""
+
+
+@app.route('/authorize', methods=["GET"])
+def authorize():
+
+    # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+      CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+    # The URI created here must exactly match one of the authorized redirect URIs
+    # for the OAuth 2.0 client, which you configured in the API Console. If this
+    # value doesn't match an authorized URI, you will get a 'redirect_uri_mismatch'
+    # error.
+    flow.redirect_uri = url_for('oauth2callback', _external=True)
+
+    authorization_url, state = flow.authorization_url(
+      # Enable offline access so that you can refresh an access token without
+      # re-prompting the user for permission. Recommended for web server apps.
+      access_type='offline',
+      # Enable incremental authorization. Recommended as a best practice.
+      include_granted_scopes='true')
+
+    print(session)
+    if('credentials' in session):
+        print("HAHAAHAHH")
+        email_service.send_welcome_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], session['credentials']['refresh_token'])
+
+        return redirect('/')
+
+    else:
+        # Store the state so the callback can verify the auth server response.
+        session['state'] = state
+
+    return redirect(authorization_url)
+
+@app.route('/oauth2callback', methods=["GET","POST"])
+def oauth2callback():
+
+    # Specify the state when creating the flow in the callback so that it can
+    # verified in the authorization server response.
+    state = session['state']
+
+    print(state)
+    print("OAuth entered - 1")
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+      CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
+    flow.redirect_uri = url_for('oauth2callback', _external=True)
+
+    print("OAuth entered - 2")
+
+    # Use the authorization server's response to fetch the OAuth 2.0 tokens.
+    authorization_response = request.url
+    flow.fetch_token(authorization_response=authorization_response)
+
+
+    print("OAuth entered - 3", authorization_response)
+
+    # Store credentials in the session.
+    # ACTION ITEM: In a production app, you likely want to save these
+    #              credentials in a persistent database instead.
+    credentials = flow.credentials
+    session['credentials'] = credentials_to_dict(credentials)
+
+    print(session['credentials'])
+
+    # print("Mail Sent")
+
+
+    return redirect('/')
+
+
+
+# @app.route('/test', methods=["GET"])
+# def test_api_request():
+#   if 'credentials' not in session:
+#     return redirect('authorize')
+
+#   # Load credentials from the session.
+#   credentials = google.oauth2.credentials.Credentials(
+#       **session['credentials'])
+
+#   drive = googleapiclient.discovery.build(
+#       API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+#   files = drive.files().list().execute()
+
+#   # Save credentials back to session in case access token was refreshed.
+#   # ACTION ITEM: In a production app, you likely want to save these
+#   #              credentials in a persistent database instead.
+#   session['credentials'] = credentials_to_dict(credentials)
+
+#   return jsonify(**files)
+
+
+
+# @app.route('/revoke', methods=["GET"])
+# def revoke():
+#   if 'credentials' not in session:
+#     return ('You need to <a href="/authorize">authorize</a> before ' +
+#             'testing the code to revoke credentials.')
+
+#   credentials = google.oauth2.credentials.Credentials(
+#     **session['credentials'])
+
+#   revoke = requests.post('https://oauth2.googleapis.com/revoke',
+#       params={'token': credentials.token},
+#       headers = {'content-type': 'application/x-www-form-urlencoded'})
+
+#   status_code = getattr(revoke, 'status_code')
+#   if status_code == 200:
+#     return('Credentials successfully revoked.' + print_index_table())
+#   else:
+#     return('An error occurred.' + print_index_table())
+
+
+# @app.route('/clear', methods=["GET"])
+# def clear_credentials():
+#   if 'credentials' in session:
+#     del session['credentials']
+#   return ('Credentials have been cleared.<br><br>' +
+#           print_index_table())
+
 
 

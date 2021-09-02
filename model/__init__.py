@@ -20,12 +20,18 @@ def checkloginusername():
         return "User exists"
 
 def checkloginpassword():
+    
+    print(request.form)
     username = request.form["username"]
+    email = request.form["email"]
+
     check = db.users.find_one({"username": username})
     password = request.form["password"]
     hashpassword = getHashed(password)
+
     if hashpassword == check["password"]:
         session["username"] = username
+        session["email"] = email
         return "correct"
     else:
         return "wrong"
@@ -69,7 +75,6 @@ def addTrustedUser(username):
     
 
 def addPost(user,post):
-    print(post)
     score = get_score(post)
     today = datetime.today()
     db.users.update({"username": user}, {"$push": {"posts": [post],"scores":[score],"date":[today]}})
@@ -81,7 +86,7 @@ def getPost(username):
     userDoc = db.users.find_one(myquery)
     items=userDoc["posts"]
     # print(items[-1])
-    return items
+    return items[::-1]
 
 def getScores(username):
     print("Posts retrieved")
@@ -101,7 +106,7 @@ def getDates(username):
         days.append(calendar.day_name[i[0].weekday()])
         # temp = i[0].day+ ' / '+i[0].month+' / '+[0].year
         formatted_dates.append(i[0].strftime('%b %d, %Y'))
-    return formatted_dates
+    return formatted_dates[::-1]
 
 def getDays(username):
     print("Days Retrieved")
