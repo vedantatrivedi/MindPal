@@ -219,17 +219,17 @@ def authorize():
       # Enable incremental authorization. Recommended as a best practice.
       include_granted_scopes='true')
 
-    print(session)
-    if('credentials' in session):
-        print("HAHAAHAHH")
-        email_service.send_welcome_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], session['credentials']['refresh_token'])
+    if(checkOAuthToken()):
+        token = getOAuthToken()
+        print("Token is :", token)
+        email_service.send_welcome_mail('dornumofficial@gmail.com', session['email'], session['username'], token['refresh_token'])
 
         return redirect('/')
 
     else:
         # Store the state so the callback can verify the auth server response.
         session['state'] = state
-
+    
     return redirect(authorization_url)
 
 @app.route('/oauth2callback', methods=["GET","POST"])
@@ -238,34 +238,32 @@ def oauth2callback():
     # Specify the state when creating the flow in the callback so that it can
     # verified in the authorization server response.
     state = session['state']
-
-    print(state)
-    print("OAuth entered - 1")
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
     flow.redirect_uri = url_for('oauth2callback', _external=True)
-
-    print("OAuth entered - 2")
 
     # Use the authorization server's response to fetch the OAuth 2.0 tokens.
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
 
 
-    print("OAuth entered - 3", authorization_response)
-
     # Store credentials in the session.
     # ACTION ITEM: In a production app, you likely want to save these
     #              credentials in a persistent database instead.
-    credentials = flow.credentials
-    session['credentials'] = credentials_to_dict(credentials)
 
-    print(session['credentials'])
-
-    # print("Mail Sent")
-
+    credentials = credentials_to_dict(flow.credentials)
+    session['credentials'] = credentials
+    putOAuthToken(credentials)
 
     return redirect('/')
+
+def credentials_to_dict(credentials):
+  return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes}
 
 
 

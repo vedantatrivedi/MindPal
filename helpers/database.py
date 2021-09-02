@@ -6,9 +6,11 @@ import configuration
 #connect to mongodb
 mongoconnection = MongoClient("mongodb+srv://vedantatrivedi:VITChennai@tarpcluster.ssq43.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
-
 db = mongoconnection.users
 usersdb = db["trusted"]
+oauthdb = mongoconnection.OAuth_tokens 
+
+
 # usersCollection = db["users"]
 # usersCollection.users.update_many({"trustedUsers": {"$exists": False}}, {"$set": {"trustedUsers": []}})
 
