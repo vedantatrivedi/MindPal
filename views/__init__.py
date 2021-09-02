@@ -24,7 +24,6 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 @app.route('/', methods=["GET"])
 def home():
 
-    print(session)
     if "username" in session:
         posts = getPost(session["username"])
         print("Inside home() with username " + session["username"])
@@ -40,8 +39,9 @@ def register():
         return render_template("register.html")
     elif request.method == "POST":
 
-        if('credentials' in session):
-            email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], session['credentials']['refresh_token'])
+        if(checkOAuthToken()):
+            token = getOAuthToken()
+            email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
             
         registerUser()
         return redirect(url_for("login"))
@@ -189,14 +189,14 @@ def utilitiesother():
     return render_template("utilities-other.html")
 
 
-@app.route('/send_mail', methods=["GET"])
+# @app.route('/send_mail', methods=["GET"])
 
-def send_mail():
-    email_service.send_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com',
-              'A mail from you from Python',
-              '<b>A mail from you from Python</b><br>', session['credentials']['refresh_token'])
+# def send_mail():
+#     email_service.send_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com',
+#               'A mail from you from Python',
+#               '<b>A mail from you from Python</b><br>', session['credentials']['refresh_token'])
 
-    return ""
+#     return ""
 
 
 @app.route('/authorize', methods=["GET"])
@@ -219,17 +219,11 @@ def authorize():
       # Enable incremental authorization. Recommended as a best practice.
       include_granted_scopes='true')
 
-    print(session)
-    if('credentials' in session):
-        print("HAHAAHAHH")
-        email_service.send_welcome_mail('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], session['credentials']['refresh_token'])
-
+    if(checkOAuthToken()):
         return redirect('/')
-
     else:
-        # Store the state so the callback can verify the auth server response.
         session['state'] = state
-
+    
     return redirect(authorization_url)
 
 @app.route('/oauth2callback', methods=["GET","POST"])
@@ -238,86 +232,28 @@ def oauth2callback():
     # Specify the state when creating the flow in the callback so that it can
     # verified in the authorization server response.
     state = session['state']
-
-    print(state)
-    print("OAuth entered - 1")
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
       CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
     flow.redirect_uri = url_for('oauth2callback', _external=True)
 
-    print("OAuth entered - 2")
-
     # Use the authorization server's response to fetch the OAuth 2.0 tokens.
     authorization_response = request.url
-    flow.fetch_token(authorization_response=authorization_response)
+    flow.fetch_token(authorization_response = authorization_response)
 
-
-    print("OAuth entered - 3", authorization_response)
 
     # Store credentials in the session.
     # ACTION ITEM: In a production app, you likely want to save these
     #              credentials in a persistent database instead.
-    credentials = flow.credentials
-    session['credentials'] = credentials_to_dict(credentials)
 
-    print(session['credentials'])
-
-    # print("Mail Sent")
-
+    credentials = credentials_to_dict(flow.credentials)
+    putOAuthToken(credentials)
 
     return redirect('/')
 
-
-
-# @app.route('/test', methods=["GET"])
-# def test_api_request():
-#   if 'credentials' not in session:
-#     return redirect('authorize')
-
-#   # Load credentials from the session.
-#   credentials = google.oauth2.credentials.Credentials(
-#       **session['credentials'])
-
-#   drive = googleapiclient.discovery.build(
-#       API_SERVICE_NAME, API_VERSION, credentials=credentials)
-
-#   files = drive.files().list().execute()
-
-#   # Save credentials back to session in case access token was refreshed.
-#   # ACTION ITEM: In a production app, you likely want to save these
-#   #              credentials in a persistent database instead.
-#   session['credentials'] = credentials_to_dict(credentials)
-
-#   return jsonify(**files)
-
-
-
-# @app.route('/revoke', methods=["GET"])
-# def revoke():
-#   if 'credentials' not in session:
-#     return ('You need to <a href="/authorize">authorize</a> before ' +
-#             'testing the code to revoke credentials.')
-
-#   credentials = google.oauth2.credentials.Credentials(
-#     **session['credentials'])
-
-#   revoke = requests.post('https://oauth2.googleapis.com/revoke',
-#       params={'token': credentials.token},
-#       headers = {'content-type': 'application/x-www-form-urlencoded'})
-
-#   status_code = getattr(revoke, 'status_code')
-#   if status_code == 200:
-#     return('Credentials successfully revoked.' + print_index_table())
-#   else:
-#     return('An error occurred.' + print_index_table())
-
-
-# @app.route('/clear', methods=["GET"])
-# def clear_credentials():
-#   if 'credentials' in session:
-#     del session['credentials']
-#   return ('Credentials have been cleared.<br><br>' +
-#           print_index_table())
-
-
-
+def credentials_to_dict(credentials):
+  return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes}

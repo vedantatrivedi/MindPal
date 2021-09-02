@@ -11,6 +11,7 @@ import json
 import numpy as np
 import re
 
+
 def checkloginusername():
     username = request.form["username"]
     check = db.users.find_one({"username": username})
@@ -21,13 +22,13 @@ def checkloginusername():
 
 def checkloginpassword():
     
-    print(request.form)
     username = request.form["username"]
     # email = request.form["email"]
 
     check = db.users.find_one({"username": username})
     password = request.form["password"]
     hashpassword = getHashed(password)
+    email = check["email"]
 
     if hashpassword == check["password"]:
         session["username"] = username
@@ -62,7 +63,7 @@ def registerUser():
     print("Done")
 
 def addTrustedUser(username):
-    fields = [k for k in request.form]                                      
+    fields = [k for k in request.form]
     values = [request.form[k] for k in request.form]
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
@@ -147,3 +148,24 @@ def getScoresForPieChart(username):
     unhappy_score = len(unhappy_elements)
     pie_chart_data = [happy_score,med_score,unhappy_score]
     return pie_chart_data
+
+def checkOAuthToken():
+
+    # Currently no token present
+    if(oauthdb.OAuth_tokens.count() == 0):
+        return False
+
+    return True
+
+
+def putOAuthToken(credentials):
+
+    # Clear older entries
+    oauthdb.OAuth_tokens.delete_many({})
+
+    # Insert new entry
+    oauthdb.OAuth_tokens.insert_one(json.loads(json_util.dumps(credentials)))
+
+
+def getOAuthToken():
+    return oauthdb.OAuth_tokens.find_one()
