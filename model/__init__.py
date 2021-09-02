@@ -23,7 +23,7 @@ def checkloginpassword():
     
     print(request.form)
     username = request.form["username"]
-    email = request.form["email"]
+    # email = request.form["email"]
 
     check = db.users.find_one({"username": username})
     password = request.form["password"]
@@ -31,7 +31,7 @@ def checkloginpassword():
 
     if hashpassword == check["password"]:
         session["username"] = username
-        session["email"] = email
+        # session["email"] = email
         return "correct"
     else:
         return "wrong"
@@ -75,7 +75,7 @@ def addTrustedUser(username):
     
 
 def addPost(user,post):
-    score = get_score(post)
+    score = get_sentiment(post)
     today = datetime.today()
     db.users.update({"username": user}, {"$push": {"posts": [post],"scores":[score],"date":[today]}})
     print("Post Added")
