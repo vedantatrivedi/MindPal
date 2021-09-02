@@ -39,6 +39,7 @@ def register():
         return render_template("register.html")
     elif request.method == "POST":
 
+        # Send Welcome Mail
         if(checkOAuthToken()):
             token = getOAuthToken()
             email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
@@ -68,7 +69,7 @@ def addPosts():
     except:
         pass
 
-    return response
+    return redirect('/')
     
 @app.route('/getPosts', methods = ["Get"])
 def getPosts():
