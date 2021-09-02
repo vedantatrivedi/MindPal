@@ -49,6 +49,7 @@ def checkusername():
 def registerUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
+    
     fields.append("posts")
     values.append([])
     fields.append("scores")
@@ -56,11 +57,18 @@ def registerUser():
     fields.append("date")
     values.append([])
     data = dict(zip(fields, values))
-    user_data = json.loads(json_util.dumps(data))
-    user_data["password"] = getHashed(user_data["password"])
-    user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    db.users.insert(user_data)
-    print("Done")
+    username = data['username']
+    print(data)
+    exist_count=db.users.find({"username": username}).count()
+    print(exist_count)
+    if(exist_count>0):
+        return False
+    else:
+        user_data = json.loads(json_util.dumps(data))
+        user_data["password"] = getHashed(user_data["password"])
+        user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
+        db.users.insert(user_data)
+        return True
 
 def addTrustedUser(username):
     fields = [k for k in request.form]

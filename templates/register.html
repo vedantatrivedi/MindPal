@@ -59,6 +59,9 @@
                 </button>
               </form>
               <hr>
+              {% for mesg in get_flashed_messages() %}
+                        <p>{{ mesg }}<p>
+                        {% endfor %}
               <div class="text-center">
                 <a class="small" href="/forgot-password">Forgot Password?</a>
               </div>

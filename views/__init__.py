@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import *
 from model import email_service
@@ -38,14 +38,15 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     elif request.method == "POST":
-
+        response = registerUser()
         # Send Welcome Mail
-        if(checkOAuthToken()):
+        if(checkOAuthToken() and response):
             token = getOAuthToken()
             email_service.send_welcome_mail('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
-            
-        registerUser()
-        return redirect(url_for("login"))
+            return redirect(url_for("login"))
+        else: 
+            flash("Username already exists")
+            return render_template('register.html')
     
 
 #Check if email already exists in the registratiion page
