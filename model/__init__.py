@@ -49,7 +49,6 @@ def checkusername():
 def registerUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
-    
     fields.append("posts")
     values.append([])
     fields.append("scores")
@@ -74,13 +73,22 @@ def addTrustedUser(username):
     fields = [k for k in request.form]
     values = [request.form[k] for k in request.form]
     data = dict(zip(fields, values))
-    user_data = json.loads(json_util.dumps(data))
-    fields.append("users")
-    values.append(username)
-    db.trusted.insert(user_data)
+    data['password']=''
+    data['isConfirmed'] = False
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    # print(userDoc)
+    
+    user_id = userDoc['_id']
+    print(user_id)
+    data['trusted-by-id'] = [str(user_id)]
+    trusted_user_data = json.loads(json_util.dumps(data))
+    # fields.append("users")
+    # values.append(username)
+    db.trusted.insert(trusted_user_data)
     trustedUser = request.form.get("username")
     db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
-    print("Done")
+    print("Trusted User Added")
     
 
 def addPost(user,post):
