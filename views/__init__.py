@@ -16,9 +16,6 @@ import googleapiclient.discovery
 
 
 CLIENT_SECRETS_FILE = "client_secret.json"
-
-# This OAuth 2.0 access scope allows for full read/write access to the
-# authenticated user's account and requires requests to use an SSL connection.
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.send", "https://www.googleapis.com/auth/drive.metadata.readonly"]
 
 @app.route('/', methods=["GET"])
@@ -27,8 +24,17 @@ def home():
     if "username" in session:
         posts = getPost(session["username"])
         print("Inside home() with username " + session["username"])
-        return render_template('index.html',username = session["username"], 
-            posts = getPost(session["username"]),scores = getScores(session["username"]), days=getDays(session["username"]), dates=getDates(session["username"]))
+
+        posts = getPost(session["username"])
+        text, scores, dates, days = [], [], [], []
+
+        for entry in posts:
+            dates.append(getFormattedDate(entry[0]))
+            text.append(entry[1])
+            scores.append(entry[2])
+            days.append(getDayfromDate(entry[0]))
+
+        return render_template('index.html',username = session["username"], posts = text,scores = scores, days = days, dates = dates)
     else:
         return render_template('login.html')
 
@@ -175,11 +181,11 @@ def utilitiesborder():
     return render_template("utilities-border.html")
 
 #Utilities-color
-@app.route('/add-trusted-user', methods=["GET","POST"])
+@app.route('/utilities-color', methods=["GET","POST"])
 def utilitiescolor():
     
     if request.method == "GET":
-        return render_template("add_trusted_user.html")
+        return render_template("utilities-color.html")
     elif request.method == "POST":
         addTrustedUser(session["username"])
         return render_template('index.html',username = session["username"], 

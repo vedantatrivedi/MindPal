@@ -23,16 +23,17 @@ def checkloginusername():
 def checkloginpassword():
     
     username = request.form["username"]
-    # email = request.form["email"]
-
     check = db.users.find_one({"username": username})
+
+    if(check == None):
+        return "wrong"
+
     password = request.form["password"]
     hashpassword = getHashed(password)
-    email = check["email"]
 
     if hashpassword == check["password"]:
         session["username"] = username
-        # session["email"] = email
+        session["email"] = check["email"]
         return "correct"
     else:
         return "wrong"
@@ -49,17 +50,18 @@ def checkusername():
 def registerUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
+    
     fields.append("posts")
     values.append([])
-    fields.append("scores")
+
+    fields.append("trusted_users")
     values.append([])
-    fields.append("date")
-    values.append([])
+
     data = dict(zip(fields, values))
-    username = data['username']
-    print(data)
-    exist_count=db.users.find({"username": username}).count()
-    print(exist_count)
+
+    username    = data['username']
+    exist_count = db.users.find({"username": username}).count()
+
     if(exist_count>0):
         return False
     else:
@@ -73,80 +75,84 @@ def addTrustedUser(username):
     fields = [k for k in request.form]
     values = [request.form[k] for k in request.form]
     data = dict(zip(fields, values))
-    data['password']=''
-    data['isConfirmed'] = False
-    myquery = { "username": username }
-    userDoc = db.users.find_one(myquery)
-    # print(userDoc)
-    
-    user_id = userDoc['_id']
-    print(user_id)
-    data['trusted-by-id'] = [str(user_id)]
-    trusted_user_data = json.loads(json_util.dumps(data))
-    # fields.append("users")
-    # values.append(username)
-    db.trusted.insert(trusted_user_data)
+    user_data = json.loads(json_util.dumps(data))
+    fields.append("users")
+    values.append(username)
+    db.trusted.insert(user_data)
     trustedUser = request.form.get("username")
     db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
-    print("Trusted User Added")
-    
+    print("Done")
 
-def addPost(user,post):
+    
+# Post structure - [Date, Post, Score]
+def addPost(user, post):
     score = get_sentiment(post)
     today = datetime.today()
-    db.users.update({"username": user}, {"$push": {"posts": [post],"scores":[score],"date":[today]}})
+    db.users.update( {"username": user}, {"$push": {"posts": [today, post, score]}} )
     print("Post Added")
+
 
 def getPost(username):
     print("Posts retrieved")
     myquery = { "username": username }
     userDoc = db.users.find_one(myquery)
-    items=userDoc["posts"]
+
+    if(userDoc == None):
+        return []
+
+    items   = userDoc["posts"]
     # print(items[-1])
     return items[::-1]
 
 def getScores(username):
-    print("Posts retrieved")
+
     myquery = { "username": username }
     userDoc = db.users.find_one(myquery)
-    scores=userDoc["scores"]
+    posts = userDoc["posts"]
+    scores = []
+
+    for entry in posts:
+        scores.append(entry[2])
+
     return scores
 
-def getDates(username):
-    print("Dates Retrieved")
-    myquery = { "username": username }
-    userDoc = db.users.find_one(myquery)
-    dates = userDoc["date"]
-    days=[]
-    formatted_dates=[]
-    for i in dates:
-        days.append(calendar.day_name[i[0].weekday()])
-        # temp = i[0].day+ ' / '+i[0].month+' / '+[0].year
-        formatted_dates.append(i[0].strftime('%b %d, %Y'))
-    return formatted_dates[::-1]
+# def getDates(username):
+#     print("Dates Retrieved")
+#     myquery = { "username": username }
+#     userDoc = db.users.find_one(myquery)
+#     dates = userDoc["date"]
+#     days=[]
+#     formatted_dates=[]
+#     for i in dates:
+#         days.append(calendar.day_name[i[0].weekday()])
+#         # temp = i[0].day+ ' / '+i[0].month+' / '+[0].year
+#         formatted_dates.append(i[0].strftime('%b %d, %Y'))
+#     return formatted_dates[::-1]
 
-def getDays(username):
-    print("Days Retrieved")
-    myquery = { "username": username }
-    userDoc = db.users.find_one(myquery)
-    dates = userDoc["date"]
-    days=[]
-    for i in dates:
-        days.append(calendar.day_name[i[0].weekday()])
+# def getDays(username):
+#     print("Days Retrieved")
+#     myquery = { "username": username }
+#     userDoc = db.users.find_one(myquery)
+#     post = userDoc["posts"]
+#     days  = []
+
+#     for entry in post:
+#         days.append(calendar.day_name[entry[0].weekday()])
        
-    return days
+#     return days
 
+def getFormattedDate(date):
+    return date.strftime('%b %d, %Y')
+
+def getDayfromDate(date):
+    return calendar.day_name[date.weekday()]
 
     
 def getScoresForChart(username):
-    user = db.users.find_one({"username":username})
-    # print(session["username"])
-    # print(user)
-    scores = user["scores"]
+    scores = getScores(username)[-7:]
     return_score = np.array(scores).flatten().tolist()
     rounded_scores = [round(num) for num in return_score]
-    print(rounded_scores)
-    return rounded_scores[-7:]
+    return rounded_scores
 
 def getScoresForPieChart(username):
     user = db.users.find_one({"username":session["username"]})
