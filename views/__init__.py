@@ -181,11 +181,11 @@ def utilitiesborder():
     return render_template("utilities-border.html")
 
 #Utilities-color
-@app.route('/utilities-color', methods=["GET","POST"])
-def utilitiescolor():
+@app.route('/add-trusted-user', methods=["GET","POST"])
+def addTrustedUser():
     
     if request.method == "GET":
-        return render_template("utilities-color.html")
+        return render_template("add_trusted_user.html")
     elif request.method == "POST":
         addTrustedUser(session["username"])
         return render_template('index.html',username = session["username"], 
