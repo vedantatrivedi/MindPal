@@ -184,10 +184,10 @@ def utilitiesanimation():
 def utilitiesborder():
     return render_template("utilities-border.html")
 
-# Utilities-color
-@app.route('/add-trusted-user', methods=["GET", "POST"])
-def addTrustedUser():
-
+#Utilities-color
+@app.route('/add-trusted-user', methods=["GET","POST"])
+def addtrusted():
+    
     if request.method == "GET":
         return render_template("add_trusted_user.html")
     elif request.method == "POST":
