@@ -182,7 +182,7 @@ def utilitiesborder():
 
 #Utilities-color
 @app.route('/add-trusted-user', methods=["GET","POST"])
-def addTrustedUser():
+def addtrusted():
     
     if request.method == "GET":
         return render_template("add_trusted_user.html")

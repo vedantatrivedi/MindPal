@@ -140,7 +140,16 @@ def getScores(username):
 #         days.append(calendar.day_name[entry[0].weekday()])
        
 #     return days
-
+def getStreak(username):
+    # All the number of consecutive days where entry exists
+    
+    return 
+    
+def currentStreak(username):
+    # Number of entries from today's date to backwards
+    return  
+    
+    
 def getFormattedDate(date):
     return date.strftime('%b %d, %Y')
 

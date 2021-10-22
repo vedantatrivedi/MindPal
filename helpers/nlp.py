@@ -38,9 +38,11 @@ def get_sentiment(journal_text):
     )
     natural_language_understanding.set_service_url('https://api.kr-seo.natural-language-understanding.watson.cloud.ibm.com/instances/6c21b731-5a0f-44d2-854f-906c346c2207') 
     try:
-        json_response = (natural_language_understanding.analyze(text=journal_text,features=Features(keywords=KeywordsOptions(sentiment= True,emotion= True,limit= 3),sentiment=SentimentOptions())).get_result())
+        json_response = (natural_language_understanding.analyze
+                         (text=journal_text,features=Features(keywords=
+                        KeywordsOptions(sentiment= True,emotion= True,limit= 3),
+                        sentiment=SentimentOptions())).get_result())
         score = json_response['sentiment']['document']['score']
-        label = json_response['sentiment']['document']['score']
         return score*100
     except:
         return 0
