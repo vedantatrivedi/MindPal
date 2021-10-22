@@ -49,7 +49,10 @@ def checkusername():
 
 
 def registerUser():
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5a24937532f1839934cbdee09d2034406f2126bc
     fields = [k for k in request.form]
     values = [request.form[k] for k in request.form]
 
