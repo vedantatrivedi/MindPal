@@ -38,6 +38,16 @@
                         </button>
                       </form>
                       <hr>
+                      <div class="text-center">
+                
+                        <div class="text-danger">
+                          {% for mesg in get_flashed_messages() %}
+                          <p>{{ mesg }}<p>
+                          {% endfor %}
+                        </div>
+                        
+                      </div>
+        
                     </div>
                   </div>
                 </div>

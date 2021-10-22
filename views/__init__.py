@@ -42,7 +42,7 @@ def register():
 
         response = registerUser()
 
-        # Send Welcome Mail
+        # Sending Welcome Mail
         if(checkOAuthToken() and response):
             
             token = getOAuthToken()
@@ -190,10 +190,16 @@ def addtrusted():
     
     if request.method == "GET":
         return render_template("add_trusted_user.html")
+
     elif request.method == "POST":
-        addTrustedUser(session["username"])
-        return render_template('index.html', username=session["username"],
-                               posts=getPost(session["username"]), scores=getScores(session["username"]), dates=getDates(session["username"]))
+        
+        response = addTrustedUser(session["username"])
+
+        if(response == False):
+            flash("Username already exists")
+            return render_template('add_trusted_user.html')
+            
+        return redirect(url_for("home"))
 
 # utilities-other
 @app.route('/utilities-other', methods=["GET"])
@@ -281,7 +287,7 @@ def set_password():
         else:
 
             flash("Username already exists")
-            return render_template('register.html')
+            return render_template('trusted_user_set_password.html')
 
 
 
