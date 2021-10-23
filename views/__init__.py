@@ -1,7 +1,6 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
-from model import *
-from model import email_service
+from model import email_service, trusted_users, oauth, users
 import json
 import google_auth_oauthlib.flow
 
@@ -14,16 +13,16 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 @app.route('/', methods=["GET"])
 def home():
     if "username" in session:
-        posts = getPost(session["username"])
+        posts = users.getPost(session["username"])
 
-        posts = getPost(session["username"])
+        posts = users.getPost(session["username"])
         text, scores, dates, days = [], [], [], []
 
         for entry in posts:
-            dates.append(getFormattedDate(entry[0]))
+            dates.append(users.getFormattedDate(entry[0]))
             text.append(entry[1])
             scores.append(entry[2])
-            days.append(getDayfromDate(entry[0]))
+            days.append(users.getDayfromDate(entry[0]))
 
         return render_template('index.html', username=session["username"], posts=text, scores=scores, days=days, dates=dates)
     else:
@@ -38,12 +37,12 @@ def register():
 
     elif request.method == "POST":
 
-        response = registerUser()
+        response = users.registerUser()
 
         # Sending Welcome Mail
         if(checkOAuthToken() and response):
             
-            token = getOAuthToken()
+            token = oauth.getOAuthToken()
             email_service.send_welcome_mail(
                 'dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
 
@@ -57,7 +56,7 @@ def register():
 # Check if email already exists in the registratiion page
 @app.route('/checkusername', methods=["POST"])
 def check():
-    return checkusername()
+    return users.checkusername()
 
 
 @app.route('/addPost', methods=["POST"])
@@ -68,7 +67,7 @@ def addPosts():
     }
 
     try:
-        addPost(session['username'], request.form['ckeditor'])
+        users.addPost(session['username'], request.form['ckeditor'])
         response = {
             'status': 201,
         }
@@ -90,7 +89,7 @@ def getPosts():
     try:
         response = {
             'status': 200,
-            'body': json.dumps(getPost(session["username"])),
+            'body': json.dumps(users.getPost(session["username"])),
         }
     except:
         pass
@@ -122,10 +121,10 @@ def trustedHome():
     if "trusted_users" in session:
         trusted_username = session["trusted_users"]
         print(trusted_username)
-        trusted_by_list = getTrustedByUsernames(trusted_username)
+        trusted_by_list = trusted_users.getTrustedByUsernames(trusted_username)
         scores = []
         for user in trusted_by_list:
-            scores.append(getScoresForChart(user))
+            scores.append(users.getScoresForChart(user))
         labels = ["Monday", "Tuesday", "Wednesday",
                   "Thursday", "Friday", "Saturday", "Sunday"]
         return render_template("trustedUserDashboard.html", scores=scores, labels=labels,user_list = trusted_by_list)
@@ -135,21 +134,21 @@ def trustedHome():
     
 @app.route('/checkloginusername', methods=["POST"])
 def check_user_login():
-    return checkloginusername()
+    return users.checkusername()
 
 
 @app.route('/checkloginpassword', methods=["POST"])
 def checkUserpassword():
-    return checkloginpassword()
+    return users.checkloginpassword()
 
 @app.route('/checkTrustedUsername', methods=["POST"])
 def checkTrusted_user_login():
-    return checkTrustedUsername()
+    return trusted_users.checkTrustedUsername()
 
 
 @app.route('/checkTrustedPassword', methods=["POST"])
 def checkTrustedpassword():
-    return checkTrustedPassword()
+    return trusted_users.checkTrustedPassword()
 
 # The admin logout
 @app.route('/logout', methods=["GET"])  # URL for logout
@@ -190,7 +189,7 @@ def cards():
 # Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
-    scores = getScoresForChart(session["username"])
+    scores = users.getScoresForChart(session["username"])
     labels = ["Monday", "Tuesday", "Wednesday",
               "Thursday", "Friday", "Saturday", "Sunday"]
     return render_template("charts.html", scores=scores, labels=labels, user=session["username"])
@@ -222,7 +221,7 @@ def addtrusted():
         # Trusted user with existing username
         if(request.form["button"] == "Same User"):
 
-            response = addTrustedUser(session["username"], (request.form['username']))
+            response = trusted_users.addTrustedUser(session["username"], (request.form['username']))
 
             # Adding to existing trusted user
             if(response == True):
@@ -234,7 +233,7 @@ def addtrusted():
                 flash('Please create a new Trusted user')
                 return render_template('add_trusted_user.html')
 
-        response = createTrustedUser(session["username"])
+        response = trusted_users.createTrustedUser(session["username"])
 
         # Trusted user with same username exists, so providing option to add this user or create new
         if(response != True):
@@ -242,21 +241,16 @@ def addtrusted():
             return render_template('add_trusted_user.html', showButton = True, user = request.form['username'], name = request.form['name'], mail = response)
         
         # Creating new trusted User, sending mail for setting password
-        if(checkOAuthToken()):
+        if(oauth.checkOAuthToken()):
 
-            hashedUsername = getHashedUserName(request.form['username'])
-            token = getOAuthToken()
+            hashedUsername = trusted_users.getHashedUserName(request.form['username'])
+            token = oauth.getOAuthToken()
             link = request.url_root + 'set_password?user=' + hashedUsername
 
             email_service.send_set_pass_mail(
                 'dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token'])
 
         return redirect(url_for("home"))
-
-# utilities-other
-@app.route('/utilities-other', methods=["GET"])
-def utilitiesother():
-    return render_template("utilities-other.html")
 
 # Testing endpoint for sending mail 
 # @app.route('/send_mail', methods=["GET"])
@@ -287,7 +281,7 @@ def authorize():
         # Enable incremental authorization. Recommended as a best practice.
         include_granted_scopes='true')
 
-    if(checkOAuthToken()):
+    if(oauth.checkOAuthToken()):
         return redirect('/')
     else:
         session['state'] = state
@@ -309,7 +303,7 @@ def oauth2callback():
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
     credentials = credentials_to_dict(flow.credentials)
-    putOAuthToken(credentials)
+    oauth.putOAuthToken(credentials)
 
     return redirect('/')
 
@@ -322,16 +316,16 @@ def set_password():
         if(hashedUsername == None):
             return redirect(url_for("errorpage"))
 
-        username, email = getUserUsingHash(hashedUsername)
+        username, email = trusted_users.getUserUsingHash(hashedUsername)
 
-        if(checkIfPassIsEmpty(username) == False or username == None):
+        if(trusted_users.checkIfPassIsEmpty(username) == False or username == None):
             return redirect(url_for("errorpage"))
 
         return render_template("trusted_user_set_password.html", username = username, email = email)
 
     elif request.method == "POST":
 
-        TrustedUserSetPass()
+        trusted_users.TrustedUserSetPass()
         return redirect(url_for("login"))
 
 
