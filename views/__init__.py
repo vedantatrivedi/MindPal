@@ -13,10 +13,8 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 
 @app.route('/', methods=["GET"])
 def home():
-
     if "username" in session:
         posts = getPost(session["username"])
-        print("Inside home() with username " + session["username"])
 
         posts = getPost(session["username"])
         text, scores, dates, days = [], [], [], []
@@ -110,19 +108,33 @@ def login():
             return redirect(url_for("home"))
 
 
-@app.route('/userlogin', methods=["GET", "POST"])
-def userlogin():
+@app.route('/trusted_user_login', methods=["GET", "POST"])
+def trusted_user_login():
     if request.method == "GET":
-        return render_template("userlogin.html")
-    else:
-        scores = getScoresForChart("test")
+        if "trusted_users" not in session:
+            return render_template("trusted_user_login.html")
+        else:
+            return redirect('/trusted_user_dashboard')
+        
+
+@app.route('/trusted_user_dashboard', methods=["GET"])
+def trustedHome():
+    if "trusted_users" in session:
+        trusted_username = session["trusted_users"]
+        print(trusted_username)
+        trusted_by_list = getTrustedByUsernames(trusted_username)
+        scores = []
+        for user in trusted_by_list:
+            scores.append(getScoresForChart(user))
         labels = ["Monday", "Tuesday", "Wednesday",
                   "Thursday", "Friday", "Saturday", "Sunday"]
-        return render_template("trustedUserDashboard.html", scores=scores, labels=labels)
-
-
+        return render_template("trustedUserDashboard.html", scores=scores, labels=labels,user_list = trusted_by_list)
+    else:
+        return render_template("trusted_user_login.html")
+        
+    
 @app.route('/checkloginusername', methods=["POST"])
-def checkUserlogin():
+def check_user_login():
     return checkloginusername()
 
 
@@ -130,10 +142,24 @@ def checkUserlogin():
 def checkUserpassword():
     return checkloginpassword()
 
+@app.route('/checkTrustedUsername', methods=["POST"])
+def checkTrusted_user_login():
+    return checkTrustedUsername()
+
+
+@app.route('/checkTrustedPassword', methods=["POST"])
+def checkTrustedpassword():
+    return checkTrustedPassword()
+
 # The admin logout
 @app.route('/logout', methods=["GET"])  # URL for logout
 def logout():  # logout function
     session.pop('username', None)  # remove user session
+    return redirect(url_for("home"))  # redirect to home page with message
+
+@app.route('/TrustedUserLogout', methods=["GET"])  # URL for logout
+def TrustedUserLogout():  # logout function
+    session.pop('trusted_users', None)  # remove user session
     return redirect(url_for("home"))  # redirect to home page with message
 
 # Forgot Password
