@@ -74,32 +74,43 @@ def registerUser():
         return True
 
 
-def addTrustedUser(username):
+def createTrustedUser(username):
 
     exist_count = db.trusted.find({"username": request.form["username"]}).count()
 
     if(exist_count > 0):
+        trustedDoc = db.trusted.find_one({"username": request.form["username"]})
+        return trustedDoc['email']
+
+    fields = [k for k in request.form]
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    data['password']= ''
+    data['isConfirmed'] = False
+    data['hashedUsername'] = getHashed(request.form.get("username"))
+    
+    myquery = { "username": username }
+    userDoc = db.users.find_one(myquery)
+    user_id = userDoc['_id']
+    data['trusted-by-id'] = [str(user_id)]
+    trusted_user_data = json.loads(json_util.dumps(data))
+    
+    db.trusted.insert(trusted_user_data)
+    trustedUser = request.form.get("username")
+    db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
+    print("Trusted User Created")
+    return True
+
+def addTrustedUser(username, trusted_username):
+
+    user_id = db.users.find_one({ "username": username })['_id']
+    
+    if(db.trusted.find({"username": trusted_username}).count() == 0):
         return False
 
-    else:
-
-        fields = [k for k in request.form]
-        values = [request.form[k] for k in request.form]
-        data = dict(zip(fields, values))
-        data['password']= ''
-        data['isConfirmed'] = False
-        data['hashedUsername'] = getHashed(request.form.get("username"))
-        
-        myquery = { "username": username }
-        userDoc = db.users.find_one(myquery)
-        user_id = userDoc['_id']
-        data['trusted-by-id'] = [str(user_id)]
-        trusted_user_data = json.loads(json_util.dumps(data))
-        
-        db.trusted.insert(trusted_user_data)
-        trustedUser = request.form.get("username")
-        db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
-        print("Trusted User Added")
+    db.trusted.update({"username": trusted_username}, {"$push": {"trusted-by-id": str(user_id)}})
+    db.users.update({"username": username}, {"$push": {"trustedUser": trusted_username}})
+    return True
 
 def getHashedUserName(trusted_username):
 

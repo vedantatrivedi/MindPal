@@ -193,11 +193,21 @@ def addtrusted():
 
     elif request.method == "POST":
         
-        response = addTrustedUser(session["username"])
+        if(request.form["button"] == "Same User"):
 
-        if(response == False):
-            flash('Username already exists')
-            return render_template('add_trusted_user.html')
+            response = addTrustedUser(session["username"], (request.form['username']))
+            
+            if(response == True):
+                return redirect(url_for("home")) 
+            else:
+                flash('Please create a new Trusted user')
+                return render_template('add_trusted_user.html')
+
+        response = createTrustedUser(session["username"])
+
+        if(response != True):
+            flash('Username already exists with email ' + response)
+            return render_template('add_trusted_user.html', showButton = True, user = request.form['username'], name = request.form['name'], mail = response)
         
         # Send Mail
         if(checkOAuthToken()):
