@@ -113,8 +113,21 @@ def getUserUsingHash(hashedUsername):
     myquery = { "hashedUsername": hashedUsername }
     trustedDoc = db.trusted.find_one(myquery)
 
+    if(trustedDoc == None):
+        return None, None
+
     return trustedDoc["username"], trustedDoc["email"]
 
+
+def checkIfPassIsEmpty(trusted_username):
+
+    myquery = {"username": trusted_username}
+    trustedDoc = db.trusted.find_one(myquery)
+
+    if(trustedDoc['password'] == ''):
+        return True
+
+    return False
 
 def TrustedUserSetPass():
 

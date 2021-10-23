@@ -283,9 +283,13 @@ def set_password():
 
         hashedUsername = request.args.get('user')
         if(hashedUsername == None):
-            redirect(url_for("errorpage"))
+            return redirect(url_for("errorpage"))
 
         username, email = getUserUsingHash(hashedUsername)
+
+        if(checkIfPassIsEmpty(username) == False or username == None):
+            return redirect(url_for("errorpage"))
+
         return render_template("trusted_user_set_password.html", username = username, email = email)
 
     elif request.method == "POST":
