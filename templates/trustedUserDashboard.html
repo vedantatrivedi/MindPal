@@ -115,7 +115,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [{% for item in scores %}
+      data: [{% for item in scores[0] %}
 {{item}},
 {% endfor %}],
       // data:[10,20,30,40,50,60,70],
@@ -277,7 +277,7 @@ var myLineChart = new Chart(ctx, {
       </div>
       <!-- End of Main Content -->
       <div class="text-center">
-        <a class="small" href="/login">Go back</a>
+        <a class="small" href="/TrustedUserLogout">Go back</a>
       </div>
       <!-- Footer -->
       <footer class="sticky-footer bg-white">

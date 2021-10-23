@@ -38,6 +38,34 @@ def checkloginpassword():
     else:
         return "wrong"
 
+def checkTrustedUsername():
+    username = request.form["username"]
+    check = db.trusted.find_one({"username": username})
+    if check is None:
+        return "No User"
+    else:
+        return "User exists"
+
+
+def checkTrustedPassword():
+
+    username = request.form["username"]
+    check = db.trusted.find_one({"username": username})
+
+    if(check == None):
+        return "wrong"
+
+    password = request.form["password"]
+    hashpassword = getHashed(password)
+
+    if hashpassword == check["password"]:
+        session["trusted_users"] = username
+        session["trusted_users_email"] = check["email"]
+        print(session)
+        return "correct"
+    else:
+        return "wrong"
+
 
 def checkusername():
     username = request.form["username"]
@@ -156,32 +184,6 @@ def getScores(username):
 
     return scores
 
-# def getDates(username):
-#     print("Dates Retrieved")
-#     myquery = { "username": username }
-#     userDoc = db.users.find_one(myquery)
-#     dates = userDoc["date"]
-#     days=[]
-#     formatted_dates=[]
-#     for i in dates:
-#         days.append(calendar.day_name[i[0].weekday()])
-#         # temp = i[0].day+ ' / '+i[0].month+' / '+[0].year
-#         formatted_dates.append(i[0].strftime('%b %d, %Y'))
-#     return formatted_dates[::-1]
-
-# def getDays(username):
-#     print("Days Retrieved")
-#     myquery = { "username": username }
-#     userDoc = db.users.find_one(myquery)
-#     post = userDoc["posts"]
-#     days  = []
-
-#     for entry in post:
-#         days.append(calendar.day_name[entry[0].weekday()])
-
-#     return days
-
-
 def getStreak(username):
     # All the number of consecutive days where entry exists
 
@@ -247,3 +249,20 @@ def putOAuthToken(credentials):
 
 def getOAuthToken():
     return oauthdb.OAuth_tokens.find_one()
+
+def getUsernameFromId(user_id):
+    myquery = {'_id': ObjectId(user_id)}
+    userDoc = db.users.find_one(myquery)
+    return userDoc["username"]
+    
+
+def getTrustedByUsernames(trusted_user):
+    myquery = { "username": trusted_user }
+    trustedDoc = db.trusted.find_one(myquery)
+    user_id_list = trustedDoc["trusted-by-id"]
+    print(user_id_list)
+    username_list = []
+    for id in user_id_list:
+        username_list.append(getUsernameFromId(id))
+    return username_list
+
