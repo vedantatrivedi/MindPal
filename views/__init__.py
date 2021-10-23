@@ -218,14 +218,31 @@ def addtrusted():
         return render_template("add_trusted_user.html")
 
     elif request.method == "POST":
-        
-        response = addTrustedUser(session["username"])
 
-        if(response == False):
-            flash('Username already exists')
-            return render_template('add_trusted_user.html')
+        # Trusted user with existing username
+        if(request.form["button"] == "Same User"):
+
+            response = addTrustedUser(session["username"], (request.form['username']))
+
+            # Adding to existing trusted user
+            if(response == True):
+                return redirect(url_for("home")) 
+
+            # username was changed but clicked wrong button
+            else:
+
+                flash('Please create a new Trusted user')
+                return render_template('add_trusted_user.html')
+
+
+        response = createTrustedUser(session["username"])
+
+        # Trusted user with same username exists, so providing option to add this user or create new
+        if(response != True):
+            flash('Username already exists with email ' + response)
+            return render_template('add_trusted_user.html', showButton = True, user = request.form['username'], name = request.form['name'], mail = response)
         
-        # Send Mail
+        # Creating new trusted User, sending mail for setting password
         if(checkOAuthToken()):
 
             hashedUsername = getHashedUserName(request.form['username'])
@@ -309,9 +326,13 @@ def set_password():
 
         hashedUsername = request.args.get('user')
         if(hashedUsername == None):
-            redirect(url_for("errorpage"))
+            return redirect(url_for("errorpage"))
 
         username, email = getUserUsingHash(hashedUsername)
+
+        if(checkIfPassIsEmpty(username) == False or username == None):
+            return redirect(url_for("errorpage"))
+
         return render_template("trusted_user_set_password.html", username = username, email = email)
 
     elif request.method == "POST":
