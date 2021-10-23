@@ -49,10 +49,7 @@ def checkusername():
 
 
 def registerUser():
-<<<<<<< HEAD
 
-=======
->>>>>>> 5a24937532f1839934cbdee09d2034406f2126bc
     fields = [k for k in request.form]
     values = [request.form[k] for k in request.form]
 
@@ -91,6 +88,7 @@ def addTrustedUser(username):
         data = dict(zip(fields, values))
         data['password']= ''
         data['isConfirmed'] = False
+        data['hashedUsername'] = getHashed(request.form.get("username"))
         
         myquery = { "username": username }
         userDoc = db.users.find_one(myquery)
@@ -102,6 +100,27 @@ def addTrustedUser(username):
         trustedUser = request.form.get("username")
         db.users.update({"username": username}, {"$push": {"trustedUser": trustedUser}})
         print("Trusted User Added")
+
+def getHashedUserName(trusted_username):
+
+    myquery = { "username": trusted_username }
+    trustedDoc = db.trusted.find_one(myquery)
+    return trustedDoc["hashedUsername"]
+
+
+def getUserUsingHash(hashedUsername):
+
+    myquery = { "hashedUsername": hashedUsername }
+    trustedDoc = db.trusted.find_one(myquery)
+
+    return trustedDoc["username"], trustedDoc["email"]
+
+
+def TrustedUserSetPass():
+
+    # trustedUserdoc = db.trusted.find({"username": request.form['username']})
+    passvalue = getHashed(request.form['password'])
+    db.trusted.update({"username": request.form['username']}, {"$set": {"password": passvalue}})
 
 # Post structure - [Date, Post, Score]
 def addPost(user, post):

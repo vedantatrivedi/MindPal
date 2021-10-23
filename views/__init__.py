@@ -196,9 +196,19 @@ def addtrusted():
         response = addTrustedUser(session["username"])
 
         if(response == False):
-            flash("Username already exists")
+            flash('Username already exists')
             return render_template('add_trusted_user.html')
-            
+        
+        # Send Mail
+        if(checkOAuthToken()):
+
+            hashedUsername = getHashedUserName(request.form['username'])
+            token = getOAuthToken()
+            link = request.url_root + 'set_password?user=' + hashedUsername
+
+            email_service.send_set_pass_mail(
+                'dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token'])
+
         return redirect(url_for("home"))
 
 # utilities-other
@@ -270,26 +280,18 @@ def oauth2callback():
 def set_password():
 
     if request.method == "GET":
-        return render_template("trusted_user_set_password.html")
+
+        hashedUsername = request.args.get('user')
+        if(hashedUsername == None):
+            redirect(url_for("errorpage"))
+
+        username, email = getUserUsingHash(hashedUsername)
+        return render_template("trusted_user_set_password.html", username = username, email = email)
 
     elif request.method == "POST":
 
-        response = registerUser()
-
-        # Send Welcome Mail
-        if(checkOAuthToken() and response):
-            
-            token = getOAuthToken()
-            email_service.send_welcome_mail(
-                'dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
-
-            return redirect(url_for("login"))
-        else:
-
-            flash("Username already exists")
-            return render_template('trusted_user_set_password.html')
-
-
+        TrustedUserSetPass()
+        return redirect(url_for("login"))
 
 
 def credentials_to_dict(credentials):
