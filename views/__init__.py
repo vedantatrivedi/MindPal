@@ -208,7 +208,6 @@ def addtrusted():
                 flash('Please create a new Trusted user')
                 return render_template('add_trusted_user.html')
 
-
         response = createTrustedUser(session["username"])
 
         # Trusted user with same username exists, so providing option to add this user or create new
@@ -283,11 +282,6 @@ def oauth2callback():
     # Use the authorization server's response to fetch the OAuth 2.0 tokens.
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
-
-    # Store credentials in the session.
-    # ACTION ITEM: In a production app, you likely want to save these
-    #              credentials in a persistent database instead.
-
     credentials = credentials_to_dict(flow.credentials)
     putOAuthToken(credentials)
 
