@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import mean
 from app import app
 from flask import request, session
 from helpers.database import *
@@ -10,8 +11,9 @@ import calendar
 import json
 import numpy as np
 
+
 def checkloginpassword():
-    
+
     username = request.form["username"]
     check = db.users.find_one({"username": username})
 
@@ -27,7 +29,8 @@ def checkloginpassword():
         return "correct"
     else:
         return "wrong"
-    
+
+
 def checkusername():
     username = request.form["username"]
     check = db.users.find_one({"username": username})
@@ -63,6 +66,8 @@ def registerUser():
         return True
 
 # Post structure - [Date, Post, Score]
+
+
 def addPost(user, post):
     score = get_sentiment(post)
     today = datetime.today()
@@ -71,7 +76,8 @@ def addPost(user, post):
     print("Post Added")
 
 
-def getPost(username):
+def getPost(username, limit = None):
+
     print("Posts retrieved")
     myquery = {"username": username}
     userDoc = db.users.find_one(myquery)
@@ -80,7 +86,10 @@ def getPost(username):
         return []
 
     items = userDoc["posts"]
-    # print(items[-1])
+
+    if(limit != None):
+        return items[::-1][:limit]
+
     return items[::-1]
 
 
@@ -95,6 +104,24 @@ def getScores(username):
         scores.append(entry[2])
 
     return scores
+
+def getTrustedUsers(username):
+    
+    userDoc = db.users.find_one({"username": username})
+    return userDoc['trustedUser']
+
+def getEmailofTrustedUsers(username):
+
+    trustedUsers = getTrustedUsers(username)
+
+    email_list = []
+    for trustedUser in trustedUsers:
+        trustedDoc = db.trusted.find_one({"username": trustedUser})
+        email_list.append(trustedDoc['email'])
+
+    return email_list
+
+
 
 def getStreak(username):
     # All the number of consecutive days where entry exists
@@ -141,3 +168,20 @@ def getScoresForPieChart(username):
     return pie_chart_data
 
 
+def check_low_scores(username):
+
+    posts = getPost(username, limit = 7)
+
+    if(len(posts) == 0):
+        return False
+    
+    mean_score = 0
+    for i in range(min(len(posts), 7)):
+        mean_score += posts[i][2]
+
+    mean_score = mean_score/min(len(posts), 7)
+    print("Score :", mean_score, username)
+    if(mean_score < -25):
+        return True
+
+    return False
