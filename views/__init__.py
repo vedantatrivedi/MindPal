@@ -4,7 +4,7 @@ from model import email_service, trusted_users, oauth, users
 from datetime import datetime, timedelta
 import json
 import google_auth_oauthlib.flow
-
+import threading
 
 CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.send",
@@ -14,7 +14,6 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 @app.route('/', methods=["GET"])
 def home():
     if "username" in session:
-        posts = users.getPost(session["username"])
 
         posts = users.getPost(session["username"])
         text, scores, dates, days = [], [], [], []
@@ -24,6 +23,17 @@ def home():
             text.append(entry[1])
             scores.append(entry[2])
             days.append(users.getDayfromDate(entry[0]))
+        
+        # Checking if last 7 entries have low score
+        # TODO : Checking only on particular days not every login
+        check_low = users.check_low_scores(session['username'])
+        if(check_low == True):
+
+            if(oauth.checkOAuthToken()):
+                token = oauth.getOAuthToken()
+                trusted_users_emails = (users.getEmailofTrustedUsers(session['username']))
+                send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'],))
+                send_mail_thread.start()
 
         return render_template('index.html', username=session["username"], posts=text, scores=scores, days=days, dates=dates)
     else:
@@ -41,11 +51,11 @@ def register():
         response = users.registerUser()
 
         # Sending Welcome Mail
-        if(checkOAuthToken() and response):
+        if(oauth.checkOAuthToken() and response):
             
             token = oauth.getOAuthToken()
-            email_service.send_welcome_mail(
-                'dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
+            send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'],))
+            send_mail_thread.start()
 
             return redirect(url_for("login"))
         else:
@@ -248,18 +258,18 @@ def addtrusted():
             token = oauth.getOAuthToken()
             link = request.url_root + 'set_password?user=' + hashedUsername
 
-            email_service.send_set_pass_mail(
-                'dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token'])
+            send_mail_thread = threading.Thread(target=email_service.send_set_pass_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token']))
+            send_mail_thread.start()
 
         return redirect(url_for("home"))
 
 # Testing endpoint for sending mail 
-# @app.route('/send_mail', methods=["GET"])
-# def send_mail():
-#     token = getOAuthToken()
-#     email_service.send_welcome_mail(
-#         'dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token'])
-#     return redirect(url_for("home"))
+@app.route('/send_mail', methods=["GET"])
+def send_mail():
+    token = oauth.getOAuthToken()
+    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token']))
+    send_mail_thread.start()
+    return redirect(url_for("home"))
 
 @app.route('/currentStreak', methods=["Get"])
 def currentStreak():

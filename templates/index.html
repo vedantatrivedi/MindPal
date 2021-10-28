@@ -379,27 +379,20 @@
   <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
   <script>
 
-      var frame = document.getElementsByClassName('myFrame');
-      for (let i = 0; i < frame.length; i++) { 
-            frame[i].onload = function () {
+    window.onload = function() {
+        set_colors();
+      };
+
+    function set_colors(){
+
+        var frame = document.getElementsByClassName('myFrame');
+        for (let i = 0; i < frame.length; i++) { 
             var body = frame[i].contentWindow.document.querySelector('body');
-            body.style.fontFamily = "'Nunito', sans-serif";
+            body.style.fontFamily = '"Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
             body.style.color = "#df4e61";
-        };
+            body.style.fontWeight = '700';
+        }
       }
-
-      // $("form").submit(function(e){
-      //   e.preventDefault();
-      // });
-
-
-      // $("#SubmitPostButton").click(function() {
-      //     var data = $("form:input").serializeArray();
-      //     $.post( $("#myForm").attr("action"),data, function(info) {
-      //         $("#result").html(info); 
-      //     });
-      // });
-
 
 
   </script>
