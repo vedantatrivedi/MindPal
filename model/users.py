@@ -96,9 +96,14 @@ def getScores(username):
 
     return scores
 
+
 def getStreak(username):
     # All the number of consecutive days where entry exists
-
+    items = getPost(username)
+    for entry in items:
+        print("@@ - ")
+        print(entry)
+        print("\n")
     return
 
 

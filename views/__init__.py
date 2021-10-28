@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
+from datetime import datetime, timedelta
 import json
 import google_auth_oauthlib.flow
 
@@ -259,6 +260,51 @@ def addtrusted():
 #     email_service.send_welcome_mail(
 #         'dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token'])
 #     return redirect(url_for("home"))
+
+@app.route('/currentStreak', methods=["Get"])
+def currentStreak():
+    curStreak=0
+    curTime=-1
+    for post in users.getPost(session["username"]):
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+        elif (curTime - post[0]).days <= 1:
+            curStreak += 1
+            curTime = post[0]
+        else:
+            break
+
+    response = {
+        'status': 200,
+        'body': curStreak,
+    }
+    return response
+
+@app.route('/maxStreak', methods=["Get"])
+def maxStreak():
+    curStreak=0
+    maxStreak=0
+    curTime=-1
+    for post in users.getPost(session["username"]):
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+        elif (curTime - post[0]).days <= 1:
+            curStreak += 1
+            curTime = post[0]
+        else:
+            if curStreak > maxStreak:
+                maxStreak = curStreak
+            curStreak = 0
+            curTime = post[0]
+            
+    response = {
+        'status': 200,
+        'body': maxStreak,
+    }
+    return response
+        
 
 
 @app.route('/authorize', methods=["GET"])
