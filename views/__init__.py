@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
+from datetime import datetime, timedelta
 import json
 import google_auth_oauthlib.flow
 import threading
@@ -270,6 +271,68 @@ def send_mail():
     send_mail_thread.start()
     return redirect(url_for("home"))
 
+@app.route( '/currentStreak', methods=[ "Get" ] )
+def currentStreak( ):
+
+    curStreak = 0
+    curTime = -1
+
+    for post in users.getPost( session[ "username" ] ):
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+
+        elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
+            curStreak += 1
+            curTime = post[0]
+
+        elif ( curTime - post[0] ).days < 1:
+            curTime = post[0]
+            continue
+
+        else:
+            break
+
+    response = {
+        'status': 200,
+        'body': curStreak,
+    }
+    return response
+
+@app.route( '/maxStreak', methods = [ "Get" ] )
+def maxStreak( ):
+    curStreak = 0
+    maxStreak = 0
+    curTime = -1
+
+    for post in users.getPost(session["username"]):
+        # print (post[0])
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+
+        elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
+            print(curTime, post[0])
+            curStreak += 1
+            curTime = post[0]
+
+        elif ( curTime - post[0] ).days < 1:
+            curTime = post[0]
+            continue
+        else:
+            if curStreak > maxStreak:
+                maxStreak = curStreak
+            curStreak = 1
+            curTime = post[0]
+
+    if curStreak > maxStreak:
+        maxStreak = curStreak
+
+    response = {
+        'status': 200,
+        'body': maxStreak,
+    }
+    return response
 
 @app.route('/authorize', methods=["GET"])
 def authorize():
