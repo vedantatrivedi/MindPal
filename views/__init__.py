@@ -122,12 +122,13 @@ def trustedHome():
         trusted_username = session["trusted_users"]
         print(trusted_username)
         trusted_by_list = trusted_users.getTrustedByUsernames(trusted_username)
+        data = trusted_users.getTrustedByChartData(trusted_username)
         scores = []
         for user in trusted_by_list:
             scores.append(users.getScoresForChart(user))
         labels = ["Monday", "Tuesday", "Wednesday",
                   "Thursday", "Friday", "Saturday", "Sunday"]
-        return render_template("trustedUserDashboard.html", scores=scores, labels=labels,user_list = trusted_by_list)
+        return render_template("trustedUserDashboard.html", data = data, scores=scores, labels=labels,user_list = trusted_by_list)
     else:
         return render_template("trusted_user_login.html")
         
