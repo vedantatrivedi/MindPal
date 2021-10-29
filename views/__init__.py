@@ -23,20 +23,28 @@ def home():
             text.append(entry[1])
             scores.append(entry[2])
             days.append(users.getDayfromDate(entry[0]))
-        
-        # Checking if last 7 entries have low score
-        # TODO : Checking only on particular days not every login
+
+
+        # Checking if last 7 entries have low score and last mail sent greater than 15 days
         check_low = users.check_low_scores(session['username'])
         if(check_low == True):
 
-            if(oauth.checkOAuthToken()):
-                token = oauth.getOAuthToken()
-                trusted_users_emails = (users.getEmailofTrustedUsers(session['username']))
-                send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'],))
-                send_mail_thread.start()
+            last_email_date = users.get_last_email_date(session['username'])
+            if(last_email_date == None or ( (datetime.today() - last_email_date).days >= 15) ):
+
+                if(oauth.checkOAuthToken()):
+                    token = oauth.getOAuthToken()
+                    trusted_users_emails = (users.getEmailofTrustedUsers(session['username']))
+                    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'],))
+                    send_mail_thread.start()
+                    users.set_last_email_date(session['username'])
+
+
 
         return render_template('index.html', username=session["username"], posts=text, scores=scores, days=days, dates=dates)
+    
     else:
+
         return render_template('login.html')
 
 # Register new user
@@ -272,7 +280,7 @@ def send_mail():
     return redirect(url_for("home"))
 
 @app.route( '/currentStreak', methods=[ "Get" ] )
-def currentStreak( ):
+def currentStreak():
 
     curStreak = 0
     curTime = -1

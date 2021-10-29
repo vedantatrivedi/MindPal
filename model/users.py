@@ -121,21 +121,32 @@ def getEmailofTrustedUsers(username):
 
     return email_list
 
+def get_last_email_date(username):
+
+    userDoc = db.users.find_one({"username": username})
+    return userDoc.get('last_email')
+
+def set_last_email_date(username):
+
+    if(get_last_email_date(username) == None):
+        db.users.update({"username": username}, {"$set": {"last_email": datetime.today()}})
+    else:
+        db.users.update({"username": username}, {"$set": {"last_email": datetime.today()}})
+    
+
+# def getStreak(username):
+#     # All the number of consecutive days where entry exists
+#     items = getPost(username)
+#     for entry in items:
+#         print("@@ - ")
+#         print(entry)
+#         print("\n")
+#     return
 
 
-def getStreak(username):
-    # All the number of consecutive days where entry exists
-    items = getPost(username)
-    for entry in items:
-        print("@@ - ")
-        print(entry)
-        print("\n")
-    return
-
-
-def currentStreak(username):
-    # Number of entries from today's date to backwards
-    return
+# def currentStreak(username):
+#     # Number of entries from today's date to backwards
+#     return
 
 
 def getFormattedDate(date):
