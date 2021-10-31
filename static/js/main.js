@@ -7,8 +7,11 @@ $(document).ready(function(){
     var date = new Date();
     var today = date.getDate();
     // Set click handlers for DOM elements
-    $(".right-button").click({date: date}, next_year);
-    $(".left-button").click({date: date}, prev_year);
+    // $(".right-button").click({date: date}, next_year);
+    $("#next").click({date: date}, next_year);
+    $("#prev").click({date: date}, prev_year);
+
+    // $(".left-button").click({date: date}, prev_year);
     $(".month").click({date: date}, month_click);
     $("#add-button").click({date: date}, new_event);
     // Set current month as active
@@ -89,6 +92,7 @@ function date_click(event) {
 function month_click(event) {
     $(".events-container").show(250);
     $("#dialog").hide(250);
+    console.log("month clicked")
     var date = event.data.date;
     $(".active-month").removeClass("active-month");
     $(this).addClass("active-month");
@@ -99,6 +103,8 @@ function month_click(event) {
 
 // Event handler for when the year right-button is clicked
 function next_year(event) {
+    console.log("clicked next")
+    
     $("#dialog").hide(250);
     var date = event.data.date;
     var new_year = date.getFullYear()+1;
@@ -109,6 +115,7 @@ function next_year(event) {
 
 // Event handler for when the year left-button is clicked
 function prev_year(event) {
+    console.log("clicked")
     $("#dialog").hide(250);
     var date = event.data.date;
     var new_year = date.getFullYear()-1;

@@ -74,7 +74,10 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem; }
+  margin-bottom: 1rem; 
+  margin-left: 8px;
+  margin-right: 8px;
+}
 
 abbr[title],
 abbr[data-original-title] {
@@ -8003,10 +8006,10 @@ a.text-secondary:hover, a.text-secondary:focus {
   color: #494f54 !important; }
 
 .text-success {
-  color: #28a745 !important; }
+  color: #4e73df !important; }
 
 a.text-success:hover, a.text-success:focus {
-  color: #19692c !important; }
+  color: #4e73df !important; }
 
 .text-info {
   color: #17a2b8 !important; }
@@ -8144,7 +8147,7 @@ a {
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
-  color: #7e0cf5; }
+  color: #4e73df; }
   a:hover, a:focus {
     text-decoration: none !important;
     outline: none !important;
@@ -8159,7 +8162,7 @@ h1, h2, h3, h4, h5,
   color: #000; }
 
 .bg-primary {
-  background: #7e0cf5 !important; }
+  background: #4e73df !important; }
 
 .ftco-section {
   padding: 7em 0; }
@@ -8187,7 +8190,8 @@ h1, h2, h3, h4, h5,
   height: 500px;
   position: relative;
   margin: 20px auto;
-  background: #7e0cf5; }
+  background: #4e73df;
+}
 
 /*  Events display */
 .events-container {
@@ -8216,7 +8220,9 @@ h1, h2, h3, h4, h5,
   background: #fff;
   border: none !important;
   margin: 20px;
-  margin-left: 12px; }
+  margin-left: 12px; 
+  margin-right: 12px;
+}
   @media (max-width: 991.98px) {
     .event-card {
       margin: 10px; } }
@@ -8227,11 +8233,13 @@ h1, h2, h3, h4, h5,
 
 .event-count, .event-name, .event-cancelled {
   display: inline;
-  padding: 0 10px;
+  padding: 10px 10px;
+  margin-left: 5px;
+  margin-right: 5px;
   font-size: 1rem; }
 
 .event-count {
-  color: #7e0cf5;
+  color: #4e73df;
   text-align: right; }
 
 .event-name {
@@ -8300,7 +8308,7 @@ h1, h2, h3, h4, h5,
       -o-transition: none;
       transition: none; } }
   .left-button:hover, .right-button:hover {
-    color: #7e0cf5 !important; }
+    color: #4e73df !important; }
 
 .left-button {
   left: 0; }
@@ -8324,7 +8332,7 @@ h1, h2, h3, h4, h5,
   transition: .2s ease all;
   color: white;
   border: none;
-  background: #7e0cf5; }
+  background: #4e73df; }
   .button.button-white {
     background: #fff;
     color: #000; }
@@ -8415,8 +8423,8 @@ h1, h2, h3, h4, h5,
   border-color: #cd4dcc; }
 
 .event-date {
-  border-color: #7e0cf5;
-  background: #7e0cf5;
+  border-color: #4e73df;
+  background: #4e73df;
   color: #fff; }
   .event-date:after {
     position: absolute;
@@ -8433,7 +8441,7 @@ h1, h2, h3, h4, h5,
   color: #fff; }
 
 .event-date.active-date {
-  background: #7e0cf5; }
+  background: #4e73df; }
 
 /* input dialog */
 .dialog {
