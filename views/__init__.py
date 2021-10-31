@@ -15,16 +15,6 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 def home():
     if "username" in session:
 
-        posts = users.getPost(session["username"])
-        text, scores, dates, days = [], [], [], []
-
-        for entry in posts:
-            dates.append(users.getFormattedDate(entry[0]))
-            text.append(entry[1])
-            scores.append(entry[2])
-            days.append(users.getDayfromDate(entry[0]))
-
-
         # Checking if last 7 entries have low score and last mail sent greater than 15 days
         check_low = users.check_low_scores(session['username'])
         if(check_low == True):
@@ -41,7 +31,7 @@ def home():
 
 
 
-        return render_template('index.html', username=session["username"], posts=text, scores=scores, days=days, dates=dates)
+        return render_template('index.html', username=session["username"])
     
     else:
 
@@ -81,20 +71,15 @@ def check():
 @app.route('/addPost', methods=["POST"])
 def addPosts():
 
-    response = {
-        'status': 400,
-    }
+    text = request.form['ckeditor']
+    add_post_thread = threading.Thread(target=users.addPost, args=(session['username'], text,))
+    add_post_thread.start()
 
-    try:
-        users.addPost(session['username'], request.form['ckeditor'])
-        response = {
-            'status': 201,
-        }
+    session['posts'].insert(0, [datetime.today(), text, 0])
+    session.modified = True
 
-    except:
-        pass
-
-    return redirect('/')
+    print("HDHSH", session['posts'])
+    return redirect(url_for("Posts"))
 
 
 @app.route('/getPosts', methods=["Get"])
@@ -115,6 +100,25 @@ def getPosts():
 
     return response
 
+@app.route('/posts', methods=["Get"])
+def Posts():
+
+    if('posts' not in session):
+        posts = users.getPost(session["username"])
+        session['posts'] = posts
+    else:
+        posts = session['posts']
+
+    text, scores, dates, days = [], [], [], []
+
+    for entry in posts:
+        dates.append(users.getFormattedDate(entry[0]))
+        text.append(entry[1])
+        scores.append(entry[2])
+        days.append(users.getDayfromDate(entry[0]))
+
+
+    return render_template('posts.html', username = session["username"], posts = text, scores = scores, days = days, dates = dates)
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
@@ -172,7 +176,7 @@ def checkTrustedpassword():
 # The admin logout
 @app.route('/logout', methods=["GET"])  # URL for logout
 def logout():  # logout function
-    session.pop('username', None)  # remove user session
+    session.clear()
     return redirect(url_for("home"))  # redirect to home page with message
 
 @app.route('/TrustedUserLogout', methods=["GET"])  # URL for logout
@@ -409,6 +413,9 @@ def set_password():
         trusted_users.TrustedUserSetPass()
         return redirect(url_for("login"))
 
+@app.route('/getEntries',methods = ["GET"])
+def getEntries():
+    return json.dumps(users.getPost(session["username"]),indent=4, sort_keys=True, default=str)
 
 def credentials_to_dict(credentials):
     return {'token': credentials.token,
