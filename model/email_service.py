@@ -135,6 +135,7 @@ def send_welcome_mail(fromaddr, toaddr, user_name, refresh_token):
 
 def send_set_pass_mail(fromaddr, toaddr, trusted_username, username, link, refresh_token):
 
+    print("SEND MAIL", link)
     template = env.get_template('trusted_user_set_email.html')
     output = template.render(trusted_username = trusted_username, username = username, link = link)
     send_mail(fromaddr, toaddr, "Welcome to Muse!", output, refresh_token)

@@ -5,6 +5,7 @@ import ssl
 app = Flask(__name__)
 ckeditor = CKEditor(app)
 app.jinja_env.filters['zip'] = zip
+
 from views import *
 
 if __name__ == "__main__":

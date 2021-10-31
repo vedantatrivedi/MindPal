@@ -1,9 +1,10 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
+from datetime import datetime, timedelta
 import json
 import google_auth_oauthlib.flow
-
+import threading
 
 CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.send",
@@ -13,19 +14,27 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 @app.route('/', methods=["GET"])
 def home():
     if "username" in session:
-        posts = users.getPost(session["username"])
 
-        posts = users.getPost(session["username"])
-        text, scores, dates, days = [], [], [], []
+        # Checking if last 7 entries have low score and last mail sent greater than 15 days
+        check_low = users.check_low_scores(session['username'])
+        if(check_low == True):
 
-        for entry in posts:
-            dates.append(users.getFormattedDate(entry[0]))
-            text.append(entry[1])
-            scores.append(entry[2])
-            days.append(users.getDayfromDate(entry[0]))
+            last_email_date = users.get_last_email_date(session['username'])
+            if(last_email_date == None or ( (datetime.today() - last_email_date).days >= 15) ):
 
-        return render_template('index.html', username=session["username"], posts=text, scores=scores, days=days, dates=dates)
+                if(oauth.checkOAuthToken()):
+                    token = oauth.getOAuthToken()
+                    trusted_users_emails = (users.getEmailofTrustedUsers(session['username']))
+                    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'],))
+                    send_mail_thread.start()
+                    users.set_last_email_date(session['username'])
+
+
+
+        return render_template('index.html', username=session["username"])
+    
     else:
+
         return render_template('login.html')
 
 # Register new user
@@ -40,11 +49,11 @@ def register():
         response = users.registerUser()
 
         # Sending Welcome Mail
-        if(checkOAuthToken() and response):
+        if(oauth.checkOAuthToken() and response):
             
             token = oauth.getOAuthToken()
-            email_service.send_welcome_mail(
-                'dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'])
+            send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'],))
+            send_mail_thread.start()
 
             return redirect(url_for("login"))
         else:
@@ -62,20 +71,15 @@ def check():
 @app.route('/addPost', methods=["POST"])
 def addPosts():
 
-    response = {
-        'status': 400,
-    }
+    text = request.form['ckeditor']
+    add_post_thread = threading.Thread(target=users.addPost, args=(session['username'], text,))
+    add_post_thread.start()
 
-    try:
-        users.addPost(session['username'], request.form['ckeditor'])
-        response = {
-            'status': 201,
-        }
+    session['posts'].insert(0, [datetime.today(), text, 0])
+    session.modified = True
 
-    except:
-        pass
-
-    return redirect('/')
+    print("HDHSH", session['posts'])
+    return redirect(url_for("Posts"))
 
 
 @app.route('/getPosts', methods=["Get"])
@@ -96,6 +100,25 @@ def getPosts():
 
     return response
 
+@app.route('/posts', methods=["Get"])
+def Posts():
+
+    if('posts' not in session):
+        posts = users.getPost(session["username"])
+        session['posts'] = posts
+    else:
+        posts = session['posts']
+
+    text, scores, dates, days = [], [], [], []
+
+    for entry in posts:
+        dates.append(users.getFormattedDate(entry[0]))
+        text.append(entry[1])
+        scores.append(entry[2])
+        days.append(users.getDayfromDate(entry[0]))
+
+
+    return render_template('posts.html', username = session["username"], posts = text, scores = scores, days = days, dates = dates)
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
@@ -154,7 +177,7 @@ def checkTrustedpassword():
 # The admin logout
 @app.route('/logout', methods=["GET"])  # URL for logout
 def logout():  # logout function
-    session.pop('username', None)  # remove user session
+    session.clear()
     return redirect(url_for("home"))  # redirect to home page with message
 
 @app.route('/TrustedUserLogout', methods=["GET"])  # URL for logout
@@ -248,19 +271,81 @@ def addtrusted():
             token = oauth.getOAuthToken()
             link = request.url_root + 'set_password?user=' + hashedUsername
 
-            email_service.send_set_pass_mail(
-                'dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token'])
+            send_mail_thread = threading.Thread(target=email_service.send_set_pass_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token']))
+            send_mail_thread.start()
 
         return redirect(url_for("home"))
 
 # Testing endpoint for sending mail 
-# @app.route('/send_mail', methods=["GET"])
-# def send_mail():
-#     token = getOAuthToken()
-#     email_service.send_welcome_mail(
-#         'dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token'])
-#     return redirect(url_for("home"))
+@app.route('/send_mail', methods=["GET"])
+def send_mail():
+    token = oauth.getOAuthToken()
+    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token']))
+    send_mail_thread.start()
+    return redirect(url_for("home"))
 
+@app.route( '/currentStreak', methods=[ "Get" ] )
+def currentStreak():
+
+    curStreak = 0
+    curTime = -1
+
+    for post in users.getPost( session[ "username" ] ):
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+
+        elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
+            curStreak += 1
+            curTime = post[0]
+
+        elif ( curTime - post[0] ).days < 1:
+            curTime = post[0]
+            continue
+
+        else:
+            break
+
+    response = {
+        'status': 200,
+        'body': curStreak,
+    }
+    return response
+
+@app.route( '/maxStreak', methods = [ "Get" ] )
+def maxStreak( ):
+    curStreak = 0
+    maxStreak = 0
+    curTime = -1
+
+    for post in users.getPost(session["username"]):
+        # print (post[0])
+        if curTime == -1:
+            curTime = post[0]
+            curStreak += 1
+
+        elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
+            print(curTime, post[0])
+            curStreak += 1
+            curTime = post[0]
+
+        elif ( curTime - post[0] ).days < 1:
+            curTime = post[0]
+            continue
+        else:
+            if curStreak > maxStreak:
+                maxStreak = curStreak
+            curStreak = 1
+            curTime = post[0]
+
+    if curStreak > maxStreak:
+        maxStreak = curStreak
+
+    response = {
+        'status': 200,
+        'body': maxStreak,
+    }
+    return response
 
 @app.route('/authorize', methods=["GET"])
 def authorize():
@@ -329,6 +414,9 @@ def set_password():
         trusted_users.TrustedUserSetPass()
         return redirect(url_for("login"))
 
+@app.route('/getEntries',methods = ["GET"])
+def getEntries():
+    return json.dumps(users.getPost(session["username"]),indent=4, sort_keys=True, default=str)
 
 def credentials_to_dict(credentials):
     return {'token': credentials.token,

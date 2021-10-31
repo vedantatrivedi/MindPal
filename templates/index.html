@@ -72,73 +72,66 @@
                 </div>
               </div>
             </div>
-
-            <!-- Pending Requests Card Example -->
-            
           </div>
 
-          <!-- Content Row -->
-          <div class="card shadow mb-4">
-            <!-- Card Header - Accordion -->
-            <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-              <div class="row justify-content-between">
-                <div class="col-sm-9"><h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6></div>
-                <!-- <div class="col-lg-1 col-md-0"></div> -->
-                <div class="btn align-self-end col-sm-auto mr-2" data-toggle="modal" data-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div>
-              </div>
-            </a>
-
-            <div class="text-right">
-              
-            </div>
-
-            <!-- Card Content - Collapse -->
-              <form class="user" method="POST" action="/addPost">
-                  <div class="collapse show" id="collapseCardExample">
-                    <div class="card-body">
-
-                      {{ ckeditor.create() }}
-                      <!-- <textarea name ="content" id="content"></textarea> -->
-                      <button id="SubmitPostButton" class="btn btn-primary btn-user btn-block" name ="journal_entry">Add post</button>
-                    </div>
-                  </div>
-              </form>
-
-          </div>
+        <!-- Calendar -->
           <div class="row">
-            <!-- Area Chart -->
-             <div class="col-xl-12 col-lg-12">
-              <div class="card shadow mb-4"> 
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 ">
-                  <h6 class="m-0 font-weight-bold text-primary">Your previous entries</h6>
-                </div> 
-                <!-- Card Body -->
-                <div class="card-body">
-                  {% block content %}
-                  {% for post,dates in posts|zip(dates) %}
-                  <div class="chart-area">
-                    
-                    <!-- <canvas id="myAreaChart"></canvas> -->            
-                    <div class="card-header align-items-left">
-                      <h6 class=" font-weight-bold text-primary">{{dates}}</h6>
-                    </div> 
-                    <!-- Card Body -->
-                    <div class="card-body">
-                      <!-- <div class="chart-pie pt-4 pb-2"> -->
-                        <iframe class="font-weight-bold text-primary myFrame" srcdoc="{{post}}" style='width:100%;border:0;'></iframe>
-                    </div>
+
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="content w-100">
+                      <div class="calendar-container">
+                        <div class="calendar"> 
+                          <div class="year-header"> 
+                            <span class="left-button fa fa-chevron-left" id="prev"> </span> 
+                            <span class="year" id="label"></span> 
+                            <span class="right-button fa fa-chevron-right" id="next"> </span>
+                          </div> 
+                          <table class="months-table w-100"> 
+                            <tbody>
+                              <tr class="months-row">
+                                <td class="month">Jan</td> 
+                                <td class="month">Feb</td> 
+                                <td class="month">Mar</td> 
+                                <td class="month">Apr</td> 
+                                <td class="month">May</td> 
+                                <td class="month">Jun</td> 
+                                <td class="month">Jul</td>
+                                <td class="month">Aug</td> 
+                                <td class="month">Sep</td> 
+                                <td class="month">Oct</td>          
+                                <td class="month">Nov</td>
+                                <td class="month">Dec</td>
+                              </tr>
+                            </tbody>
+                          </table> 
+                          
+                          <table class="days-table w-100"> 
+                            <td class="day">Sun</td> 
+                            <td class="day">Mon</td> 
+                            <td class="day">Tue</td> 
+                            <td class="day">Wed</td> 
+                            <td class="day">Thu</td> 
+                            <td class="day">Fri</td> 
+                            <td class="day">Sat</td>
+                          </table> 
+                          <div class="frame"> 
+                            <table class="dates-table w-100"> 
+                              <tbody class="tbody">             
+                              </tbody> 
+                            </table>
+                          </div> 
+                          <!-- <button class="button" id="add-button">Add Event</button> -->
+                        </div>
+                      </div>
+                      <div class="events-container">
+                      </div>
                   </div>
-                  {% endfor %}
-                    {% endblock %}
                 </div>
-                
-              </div> 
-            </div> 
+              </div>
 
           </div>
-
-          
 
         </div>
         <!-- /.container-fluid -->
@@ -165,199 +158,6 @@
   </div>
   <!-- End of Page Wrapper -->
 
-<div class="modal fade" id="prompts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-
-        <div class="modal-body m-2" style="font-size: 1.25rem">
-
-          <div class="text-center mb-3">
-            <h2>Untangle your thoughts</h2>
-          </div>
-
-          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_reflection" style="background:#fff1ed;color:#df4e61;">Self Reflection</div>
-          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#gratitude" style="background:#fff1ed;color:#df4e61;">Gratitude</div>
-          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_love" style="background:#fff1ed;color:#df4e61;">Self Love</div>
-          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#anxiety" style="background:#fff1ed;color:#df4e61;">Anxiety</div>
-          <div class="btn m-2 font-weight-bold" data-toggle="modal" data-target="#random" style="background:#fff1ed;color:#df4e61;">Random</div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="modal fade" id="self_reflection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Self Reflection</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class=" self_reflection_content">
-        1. My favorite way to spend the day is ? <br>
-        2. I feel most energized when ? <br>
-        3. I feel happiest in my skin when ? <br>
-        4. What makes you feel calm and in control? <br>
-        5. Make a list of 5 things that make you smile. <br>
-        6. Make a list of everything that inspires you. <br>
-        7. What’s one topic you need to learn more about to help you live a more fulfilling life? <br>
-        8. What's a goal you want to accomplish and why? <br><br>
-        <!-- 9. How can you celebrate yourself today? <br><br> -->
-      </div>
-      <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += ('Self Reflection  <br>' + $('.self_reflection_content')[0].innerHTML)">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_reflection" >Back to Self</div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="gratitude" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Gratitude</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="gratitude_content">
-        1. What’s something that you’re looking forward to?<br>
-        2. What’s a simple pleasure that you’re grateful for?<br>
-        3. Write about something you are grateful for with your work or personal life. <br>
-        4. Remember a success you had and write a thank-you speech describing who helped you reach it. <br>
-        5. Describe your favorite person and list all of that person’s good qualities.<br>
-        6. Write about something someone else did that made you happy. <br>
-        <!-- Describe your favourite hobby<br> -->
-        <!-- Look around the room and write about everything you see that you’re grateful for.<br> -->
-        7. Write about 3 things you’re grateful for today.  <br><br>
-      </div>
-      <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Gratitude <br>' + $('.gratitude_content')[0].innerHTML )">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#gratitude">Back to Self</div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="self_love" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Self Love</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="self_love_content">
-        1. Write down three of your greatest strengths. Give actions, behaviours and accomplishments.<br>
-        2. List three things or people you are grateful for in your life.<br>
-        3. Dream about your perfect day. Describe what you would do, who you would be with, and what it would feel like.<br>
-        4. Talk about a recent win and how it shows a positive quality or characteristic that you have.<br>
-        5. Think of a recent challenge you were faced with and how you persisted despite the outcome.<br>
-        6. Think about your meaningful relationships. Write about how they have impacted you as well as how you have affected them.<br>
-        7. Write about qualities that make you unique<br>
-        8. What is your ideal future? Include skills and attributes to places and people.<br><br>
-      </div>
-      <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Self Love <br>' + $('.self_love_content')[0].innerHTML )">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_love">Back to Self</div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="random" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Random</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="random_content">
-        1. Write a letter to your teenage self.<br>
-        2. Make a bucket list of the things you want to do.<br><br>
-      </div>
-      <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += $('.random_content')[0].innerHTML">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#random">Back to Self</div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="anxiety" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Anxiety</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="anxiety_content">
-        1. Without thinking twice, write down everything that's on your mind.<br>
-        2. Finish the sentence "Right now, I am ..", then finish the sentence "I want to be ..".<br>
-        3. If something is making you anxious, what triggered it?<br>
-        4. What am I holding onto that I need to release? How can I turn those it into something positive?
-        5. Choose one problem that has been causing you anxiety lately, and ask yourself questions about it, like a friend.
-           Ask supportive and encouraging questions, and answer them with complete honesty.<br>
-        6. What is working perfectly in my life right now, despite any adversity I may be facing?<br>
-        7. What are some things I look forward to?<br>
-        8. What would it look like to resolve the issues I’m facing? How would I act, think and feel?<br><br>
-      </div>
-      <div class="row mt-2"><br>
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=('Anxiety <br>' + $('.anxiety_content')[0].innerHTML)">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#anxiety">Back to Self</div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
@@ -372,41 +172,14 @@
 
   <!-- Custom scripts for all pages-->
   <script src="static/js/sb-admin-2.min.js"></script>
-  <!-- <script src="../static/texteditor.js"></script> -->
   <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
-  <!-- Page level plugins -->
-  <!-- <script src="static/vendor/chart.js/Chart.min.js"></script> -->
-  <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
-  <script>
 
-      var frame = document.getElementsByClassName('myFrame');
-      for (let i = 0; i < frame.length; i++) { 
-            frame[i].onload = function () {
-            var body = frame[i].contentWindow.document.querySelector('body');
-            body.style.fontFamily = "'Nunito', sans-serif";
-            body.style.color = "#df4e61";
-        };
-      }
-
-      // $("form").submit(function(e){
-      //   e.preventDefault();
-      // });
-
-
-      // $("#SubmitPostButton").click(function() {
-      //     var data = $("form:input").serializeArray();
-      //     $.post( $("#myForm").attr("action"),data, function(info) {
-      //         $("#result").html(info); 
-      //     });
-      // });
-
-
-
-  </script>
   <!-- Page level custom scripts -->
-  <!-- <script src="static/js/demo/chart-area-demo.js"></script> -->
-  <!-- <script src="static/js/demo/chart-pie-demo.js"></script> -->
-  
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/popper.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/main.js"></script
+
 </body>
 
 </html>
