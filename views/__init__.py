@@ -37,7 +37,7 @@ def home():
     
     else:
 
-        return render_template('login.html')
+        return render_template('home-page.html')
 
 # Register new user
 @app.route('/register', methods=["GET", "POST"])
