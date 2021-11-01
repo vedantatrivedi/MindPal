@@ -108,7 +108,7 @@ def getScores(username):
 def getTrustedUsers(username):
     
     userDoc = db.users.find_one({"username": username})
-    return userDoc['trustedUser']
+    return list(set(userDoc['trustedUser']))
 
 def getEmailofTrustedUsers(username):
 

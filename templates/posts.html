@@ -37,7 +37,7 @@
 
           </div>
 
-          <div class="card shadow m-0" >
+          <div class="card shadow mb-4" >
 
                 <!-- Card Header - Dropdown -->
                 <a href="#Posts" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="Posts">
@@ -45,27 +45,37 @@
                 </a>
 
                 <!-- Card Body -->
-                <div class="card-body collapse show mb-2 row" id="Posts" > 
+                <div class="card-body collapse show mb-2 row" id="Posts" style="background-color: #edf1f5;"> 
 
 
                     {% block content %}
                     {% for post,dates in posts|zip(dates) %}
-                    
-                    <div class="col-md-4 col-sm-6">
-                      <div class="card-header align-items-left border-bottom-success">
-                        <h6 class=" font-weight-bold text-success">{{dates}}</h6>
-                      </div> 
-                      <!-- Card Body -->
-                      <a class="card-body mb-3" data-toggle="modal" data-target="#post{{loop.index}}">
-                          <h6 class="content">{{post | safe | truncate(200) }}</h6>
-                      </a>
-                    </div>
+
+                    <a class="px-0 col-md-4 col-sm-6 p-3 mb-2"  data-toggle="modal" data-target="#post{{loop.index}}">
+                      <!-- <div class="card-header align-items-left ">
+                        <h6 class="  text-success"></h6>
+                      </div>  -->
+                      <div class="bg-white m-2 py-2 o-hidden" style="border-radius: 10px;height: 200px;">
+                        <div class="p-1 border-left-primary">
+                          <h6 class="font-weight-bold "> &nbsp;&nbsp;&nbsp;{{dates}} </h6>
+                        </div>
+                        <!-- Card Body -->
+                        <h6 class="content p-3 m-2">{{post | safe | truncate(200) }}</h6>
+                      </div>
+                    </a>
 
                     <div class="modal fade m-2" id="post{{loop.index}}" tabindex="-1" role="dialog" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-body" style="font-size: 1.25rem">
-                              <h6>{{posts[loop.index-1] | safe }}</h6>
+
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">{{dates}}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                              <h6 class="p-3">{{posts[loop.index-1] | safe }}</h6>
                           </div>
                         </div>
                       </div>
@@ -74,8 +84,8 @@
                       {% endfor %}
                         {% endblock %}
                 </div>
-            </div>
           </div>
+        </div>
         
 
         </div>

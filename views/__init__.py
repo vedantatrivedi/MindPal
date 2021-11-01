@@ -15,6 +15,8 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.sen
 def home():
     if "username" in session:
 
+        trusted_users = users.getTrustedUsers(session['username'])
+
         # Checking if last 7 entries have low score and last mail sent greater than 15 days
         check_low = users.check_low_scores(session['username'])
         if(check_low == True):
@@ -31,7 +33,7 @@ def home():
 
 
 
-        return render_template('index.html', username=session["username"])
+        return render_template('index.html', username=session["username"], trusted_users=trusted_users)
     
     else:
 

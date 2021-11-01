@@ -56,11 +56,11 @@
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of Trusted Users</div>
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">6</div>
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{trusted_users | length}}</div>
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="{{trusted_users | length}}" aria-valuemin="0" aria-valuemax="10"></div>
                           </div>
                         </div>
                       </div>
@@ -77,10 +77,10 @@
         <!-- Calendar -->
           <div class="row">
 
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="content w-100">
+              <div class="card col-xl-8 col-md-9 mb-4 pr-0">
+                <!-- <div class="row"> -->
+                  <!-- <div class="col-md-12"> -->
+                    <div class="content m-0">
                       <div class="calendar-container">
                         <div class="calendar"> 
                           <div class="year-header"> 
@@ -127,9 +127,36 @@
                       </div>
                       <div class="events-container">
                       </div>
+                  <!-- </div> -->
+                  <!-- </div> -->
+                </div>
+              </div>
+
+              <div class="col-xl-4 col-md-3 mb-4">
+                <div class="card shadow h-100">
+                  <div class="card-body border-left-warning pb-0">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Trusted Users</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-body px-0">
+                    {% block content %}
+                    {% for trusted_user in trusted_users %}
+                        <div class="card mb-0 h5 font-weight-bold text-gray-800 p-2 m-2 border-left-warning">
+                          <div class="card-title">{{trusted_user}}</div>
+                        </div>
+                    {% endfor %}
+                    {% endblock %}
                   </div>
                 </div>
               </div>
+  
 
           </div>
 
@@ -178,7 +205,8 @@
   <script src="static/js/jquery.min.js"></script>
   <script src="static/js/popper.js"></script>
   <script src="static/js/bootstrap.min.js"></script>
-  <script src="static/js/main.js"></script
+  <script src="static/js/main.js"></script>
+  <link rel="stylesheet" href="static/css/style.css"></link>
 
 </body>
 
