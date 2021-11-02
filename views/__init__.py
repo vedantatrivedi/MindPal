@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import json
 import google_auth_oauthlib.flow
 import threading
@@ -80,10 +80,9 @@ def addPosts():
     add_post_thread = threading.Thread(target=users.addPost, args=(session['username'], text,))
     add_post_thread.start()
 
-    session['posts'].insert(0, [datetime.today(), text, 0])
+    session['posts'].insert(0, [datetime.today(), text, users.get_score(text)])
     session.modified = True
 
-    print("HDHSH", session['posts'])
     return redirect(url_for("Posts"))
 
 
@@ -124,6 +123,23 @@ def updatePosts():
 
     return "200"
 
+@app.route('/deletePost', methods=["Get"])
+def deletePost():
+
+    if('username' not in session):
+        return redirect(url_for("home"))
+
+    id = request.args.get('id')
+
+    post = session['posts'][int(id)-1]
+    users.removePost(session['username'], post, id)
+
+    session['posts'].pop(int(id)-1)
+    session.modified = True
+
+    return "200"
+
+
 
 @app.route('/posts', methods=["Get"])
 def Posts():
@@ -131,23 +147,22 @@ def Posts():
     if('username' not in session):
         return redirect(url_for("home"))
 
-
     if('posts' not in session):
         posts = users.getPost(session["username"])
         session['posts'] = posts
     else:
         posts = session['posts']
 
-    text, scores, dates, days = [], [], [], []
+    text, scores, dates, days, allow_edits = [], [], [], [], []
 
     for entry in posts:
         dates.append(users.getFormattedDate(entry[0]))
         text.append(entry[1])
         scores.append(entry[2])
         days.append(users.getDayfromDate(entry[0]))
+        allow_edits.append( (datetime.today()-entry[0].replace(tzinfo=None)).days < 1)
 
-
-    return render_template('posts.html', username = session["username"], posts = text, scores = scores, days = days, dates = dates)
+    return render_template('posts.html', username = session["username"], posts = text, scores = scores, days = days, dates = dates, allow_edits = allow_edits)
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
