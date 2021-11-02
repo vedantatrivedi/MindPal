@@ -33,7 +33,7 @@ def home():
 
 
 
-        return render_template('index.html', username=session["username"], trusted_users=trusted_users)
+        return render_template('index.html', username=session["username"], trusted_users=trusted_users,currStreak = users.getCurrentStreak(session['username']),maxStreak = users.getMaxStreak(session['username']))
     
     else:
 
