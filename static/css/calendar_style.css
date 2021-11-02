@@ -7993,23 +7993,11 @@ button.bg-dark:focus {
 .text-white {
   color: #fff !important; }
 
-.text-primary {
-  color: #007bff !important; }
-
-a.text-primary:hover, a.text-primary:focus {
-  color: #0056b3 !important; }
-
 .text-secondary {
   color: #6c757d !important; }
 
 a.text-secondary:hover, a.text-secondary:focus {
   color: #494f54 !important; }
-
-.text-success {
-  color: #4e73df !important; }
-
-a.text-success:hover, a.text-success:focus {
-  color: #4e73df !important; }
 
 .text-info {
   color: #17a2b8 !important; }
@@ -8214,7 +8202,7 @@ h1, h2, h3, h4, h5,
   clear: both; }
 
 .event-card {
-  padding: 20px 0;
+  /* padding: 20px 0; */
   max-width: 100%;
   display: block;
   background: #fff;
@@ -8222,6 +8210,8 @@ h1, h2, h3, h4, h5,
   margin: 20px;
   margin-left: 12px; 
   margin-right: 12px;
+  border-radius: 0.25rem;
+  padding: 10px;
 }
   @media (max-width: 991.98px) {
     .event-card {
@@ -8291,6 +8281,13 @@ h1, h2, h3, h4, h5,
   font-size: 20px;
   line-height: 40px;
   color: #000; }
+
+  @media screen and (max-width: 780px) {
+    .calendar_main {
+        display: none !important;
+    }
+}
+
 
 .left-button, .right-button {
   cursor: pointer;

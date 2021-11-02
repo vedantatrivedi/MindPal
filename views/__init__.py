@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import json
 import google_auth_oauthlib.flow
 import threading
@@ -73,6 +73,9 @@ def check():
 @app.route('/addPost', methods=["POST"])
 def addPosts():
 
+    if('username' not in session):
+        return redirect(url_for("home"))
+
     text = request.form['ckeditor']
     add_post_thread = threading.Thread(target=users.addPost, args=(session['username'], text,))
     add_post_thread.start()
@@ -86,6 +89,9 @@ def addPosts():
 
 @app.route('/getPosts', methods=["Get"])
 def getPosts():
+
+    if('username' not in session):
+        return redirect(url_for("home"))
 
     response = {
         'status': 400,
@@ -102,8 +108,29 @@ def getPosts():
 
     return response
 
+@app.route('/updatePosts', methods=["Get"])
+def updatePosts():
+
+    if('username' not in session):
+        return redirect(url_for("home"))
+
+    content = request.args.get('content')
+    id = request.args.get('id')
+    new_score = users.updatePost(session['username'], content, id)
+
+    new_entry = [datetime.now(), content, new_score]
+    session['posts'][int(id)-1] = new_entry
+    session.modified = True
+
+    return "200"
+
+
 @app.route('/posts', methods=["Get"])
 def Posts():
+
+    if('username' not in session):
+        return redirect(url_for("home"))
+
 
     if('posts' not in session):
         posts = users.getPost(session["username"])

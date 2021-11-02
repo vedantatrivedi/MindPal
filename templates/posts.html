@@ -12,19 +12,15 @@
 
 
           <!-- Content Row -->
-          <div class="card shadow mb-4">
+          <div class="card shadow mb-4 ">
             <!-- Card Header - Accordion -->
-            <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-              <div class="row justify-content-between">
-                <div class="col-sm-9"><h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6></div>
-                <!-- <div class="col-lg-1 col-md-0"></div> -->
-                <div class="btn align-self-end col-sm-auto mr-2" data-toggle="modal" data-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div>
-              </div>
-            </a>
+            <div href="#addPost" class="card-header py-3 m-0 row">
+              <div class="col-9"><h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6></div>
+              <!-- <div class="btn align-self-end col-sm-auto mr-2" data-bs-toggle="modal" data-bs-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div> -->
+              <div class="col text-right"><a href="#addPost"data-bs-toggle="collapse" role="button" aria-expanded="true"><i class="fas fa-angle-down"></i></a></div>
+            </div>
 
-            <!-- Card Content - Collapse -->
-              <form class="user" method="POST" action="/addPost">
-                  <div class="collapse show" id="collapseCardExample">
+                  <div class="collapse show" id="addPost">
                     <div class="card-body">
 
                       {{ ckeditor.create() }}
@@ -40,43 +36,55 @@
           <div class="card shadow mb-4" >
 
                 <!-- Card Header - Dropdown -->
-                <a href="#Posts" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="Posts">
-                    <div class="col-sm-9"><h6 class="m-0 font-weight-bold text-primary">Your Previous Entries!</h6></div>
-                </a>
+                <div href="#Posts" class="card-header py-3  m-0 row">
+                    <div class="col-9"><h6 class="m-0 font-weight-bold text-primary">Your Previous Entries!</h6></div>
+                    <div class="col text-right"><a href="#Posts"data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="Posts"><i class="fas fa-angle-down"></i></a></div>
+                </div>
 
                 <!-- Card Body -->
-                <div class="card-body collapse show mb-2 row" id="Posts" style="background-color: #edf1f5;"> 
+                <div class="card-body collapse show mb-2 row m-0" id="Posts" style="background-color: #edf1f5;"> 
 
 
                     {% block content %}
                     {% for post,dates in posts|zip(dates) %}
 
-                    <a class="px-0 col-md-4 col-sm-6 p-3 mb-2"  data-toggle="modal" data-target="#post{{loop.index}}">
-                      <!-- <div class="card-header align-items-left ">
-                        <h6 class="  text-success"></h6>
-                      </div>  -->
-                      <div class="bg-white m-2 py-2 o-hidden" style="border-radius: 10px;height: 200px;">
-                        <div class="p-1 border-left-primary">
-                          <h6 class="font-weight-bold "> &nbsp;&nbsp;&nbsp;{{dates}} </h6>
+                    <a class="px-0 col-md-4 col-sm-6 p-3 mb-2"  data-bs-toggle="modal" data-bs-target="#post{{loop.index}}">
+                      <div class="bg-white" style="border-radius: 10px;" data-bs-toggle="tooltip" data-bs-html="true" title="Click to edit">
+                        <div class=" m-2 py-2">
+                          <div class="p-1 border-left-primary">
+                            <h6 class="font-weight-bold "> &nbsp;&nbsp;&nbsp;{{dates}} </h6>
+                          </div>
+                          <h6 class="content p-3 o-hidden" style="height: 150px;">{{post | safe | truncate(200) }}</h6>
                         </div>
-                        <!-- Card Body -->
-                        <h6 class="content p-3 m-2">{{post | safe | truncate(200) }}</h6>
+                        <!-- <div class="text-right mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Click to Edit"><h5><i class="fas fa-pencil-alt"></i></h5></div> -->
                       </div>
                     </a>
 
                     <div class="modal fade m-2" id="post{{loop.index}}" tabindex="-1" role="dialog" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                         <div class="modal-content">
+                          
                           <div class="modal-body" style="font-size: 1.25rem">
 
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">{{dates}}</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="updateMessages()">
                                 <span aria-hidden="true">&times;</span>
-                              </button>
+                              </button> -->
                             </div>
-                              <h6 class="p-3">{{posts[loop.index-1] | safe }}</h6>
+                              <div contenteditable="true" class="p-3 m-2" id="{{loop.index}}">{{posts[loop.index-1] | safe }}</div>
+                              
                           </div>
+                          
+                          <div class="modal-footer">
+
+                            <div class="message_saving d-none text-warning"> Saving Changes.</div>
+                            <div class="message_saved  d-none text-success"> Changes saved!</div>
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="updateMessages()">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="updatePosts({{loop.index}})">Save changes</button>
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -123,13 +131,13 @@
           </div>
 
           <div class="row justify-content-around">
-            <div class="col-5 btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_reflection" style="background:#fff1ed;color:#df4e61;">Self Reflection</div>
-            <div class="col-5 btn m-2 font-weight-bold" data-toggle="modal" data-target="#gratitude" style="background:#fff1ed;color:#df4e61;">Gratitude</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#self_reflection" style="background:#fff1ed;color:#df4e61;">Self Reflection</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#gratitude" style="background:#fff1ed;color:#df4e61;">Gratitude</div>
           </div>
 
           <div class="row justify-content-around">
-            <div class="col-5 btn m-2 font-weight-bold" data-toggle="modal" data-target="#anxiety" style="background:#fff1ed;color:#df4e61;">Anxiety</div>
-            <div class="col-5 btn m-2 font-weight-bold" data-toggle="modal" data-target="#self_love" style="background:#fff1ed;color:#df4e61;">Self Love</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#anxiety" style="background:#fff1ed;color:#df4e61;">Anxiety</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#self_love" style="background:#fff1ed;color:#df4e61;">Self Love</div>
           </div>
 
           <!-- <div class="row">
@@ -309,11 +317,60 @@
   </div>
 
 
-
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
+  <script>
+    
+
+    var HttpClient = function() {
+
+
+
+
+      this.get = function(aUrl, aCallback) {
+
+        
+
+          var anHttpRequest = new XMLHttpRequest();
+          anHttpRequest.onreadystatechange = function() { 
+              if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                  aCallback(anHttpRequest.responseText);
+          }
+
+          anHttpRequest.open( "GET", aUrl, true );            
+          anHttpRequest.send( null );
+      }
+    }
+
+    function updatePosts(index) {    
+      
+      $('.message_saving').removeClass('d-none')
+
+      var client = new HttpClient();
+      var content = $('#'+index)[0].innerHTML
+      client.get('/updatePosts?id='+index+'&content='+content, function(response) {
+          console.log(response)
+      });
+
+      $('.message_saving').addClass('d-none')
+      $('.message_saved').removeClass('d-none')
+
+      
+    }
+
+    function updateMessages(){
+
+      $('.message_saving').addClass('d-none')
+      $('.message_saved').addClass('d-none')
+
+    }
+
+
+  </script>
+
 
   <!-- Bootstrap core JavaScript-->
   <script src="static/vendor/jquery/jquery.min.js"></script>

@@ -11,6 +11,7 @@ import calendar
 import json
 import numpy as np
 
+# Post structure - [Date, Post, Score]
 
 def checkloginpassword():
 
@@ -65,7 +66,6 @@ def registerUser():
         db.users.insert(user_data)
         return True
 
-# Post structure - [Date, Post, Score]
 
 
 def addPost(user, post):
@@ -92,6 +92,18 @@ def getPost(username, limit = None):
 
     return items[::-1]
 
+def updatePost(username, new_content, id):
+
+    userDoc = db.users.find_one({"username": username})
+    length = len(userDoc['posts'])
+    index = (length - int(id))
+
+    post = userDoc["posts"][index]
+    post[1] = new_content
+    post[2] = get_sentiment(new_content)
+
+    db.users.update({"username": username}, { "$set": { 'posts.'+str(index) : post}})
+    return post[2]
 
 def getScores(username):
 
