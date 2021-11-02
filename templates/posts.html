@@ -20,7 +20,7 @@
               <div class="col text-right"><a href="#addPost"data-bs-toggle="collapse" role="button" aria-expanded="true"><i class="fas fa-angle-down"></i></a></div>
             </div>
 
-                  <div class="collapse show" id="addPost">
+                  <form class="user" method="POST" action="/addPost">
                     <div class="card-body">
 
                       {{ ckeditor.create() }}
@@ -28,7 +28,7 @@
 
                       <button id="SubmitPostButton" class="btn btn-primary btn-user btn-block mt-2" name ="journal_entry">Add post</button>
                     </div>
-                  </div>
+                  </form>
               </form>
 
           </div>
@@ -64,7 +64,7 @@
                       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                         <div class="modal-content">
                           
-                          <div class="modal-body" style="font-size: 1.25rem">
+                          <div class="modal-body">
 
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">{{dates}}</h5>
@@ -72,19 +72,33 @@
                                 <span aria-hidden="true">&times;</span>
                               </button> -->
                             </div>
-                              <div contenteditable="true" class="p-3 m-2" id="{{loop.index}}">{{posts[loop.index-1] | safe }}</div>
-                              
-                          </div>
+                              {% if allow_edits[loop.index-1]%}
+                                <div contenteditable="true" class="p-3 m-2" id="{{loop.index}}">{{posts[loop.index-1] | safe }}</div>
+                              {% endif %}
+
+                              {% if not allow_edits[loop.index-1]%}
+                                <div class="p-3 m-2" id="{{loop.index}}">{{posts[loop.index-1] | safe }}</div>
+                              {% endif %}
+
+
                           
                           <div class="modal-footer">
 
-                            <div class="message_saving d-none text-warning"> Saving Changes.</div>
-                            <div class="message_saved  d-none text-success"> Changes saved!</div>
+                            
+                            {% if allow_edits[loop.index-1]%}
+                              <div class="message_saving d-none text-warning"> Saving Changes.</div>
+                              <div class="message_saved  d-none text-success"> Changes saved!</div>
+                            {% endif %}
 
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="updateMessages()">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="updatePosts({{loop.index}})">Save changes</button>
-                          </div>
 
+                            {% if allow_edits[loop.index-1]%}
+                              <button type="button" class="btn btn-primary" onclick="updatePosts({{loop.index}})">Save changes</button>
+                              <button type="button" class="btn btn-danger" onclick="deletePost({{loop.index}})">Delete</button>
+                            {% endif %}
+                            
+                          </div>
+                        </div>
                         </div>
                       </div>
                     </div>
@@ -358,7 +372,18 @@
       $('.message_saving').addClass('d-none')
       $('.message_saved').removeClass('d-none')
 
-      
+    }
+
+    function deletePost(index) {    
+
+      var client = new HttpClient();
+      var content = $('#'+index)[0].innerHTML
+      client.get('/deletePost?id='+index, function(response) {
+          console.log(response)
+          window.location.reload();
+      });
+
+
     }
 
     function updateMessages(){

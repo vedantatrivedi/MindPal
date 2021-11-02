@@ -66,7 +66,8 @@ def registerUser():
         db.users.insert(user_data)
         return True
 
-
+def get_score(post):
+    return get_sentiment(post)
 
 def addPost(user, post):
     score = get_sentiment(post)
@@ -74,7 +75,6 @@ def addPost(user, post):
     db.users.update({"username": user}, {
                     "$push": {"posts": [today, post, score]}})
     print("Post Added")
-
 
 def getPost(username, limit = None):
 
@@ -104,6 +104,16 @@ def updatePost(username, new_content, id):
 
     db.users.update({"username": username}, { "$set": { 'posts.'+str(index) : post}})
     return post[2]
+
+def removePost(username, post, id):
+
+    userDoc = db.users.find_one({"username": username})
+    length = len(userDoc['posts'])
+    index  = length - int(id)
+
+    post = userDoc["posts"][index]
+    db.users.update({"username": username}, {'$pull': {"posts": post}})
+
 
 def getScores(username):
 
