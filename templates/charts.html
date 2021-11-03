@@ -8,10 +8,6 @@
   <!-- Bootstrap core JavaScript-->
   <script src="static/vendor/jquery/jquery.min.js"></script>
   <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/moment.min.js'></script>
-  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery.min.js'></script>
-  <script src="http://fullcalendar.io/js/fullcalendar-2.1.1/lib/jquery-ui.custom.min.js"></script>
-  <script src='http://fullcalendar.io/js/fullcalendar-2.1.1/fullcalendar.min.js'></script>
   <!-- Core plugin JavaScript-->
   <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
@@ -19,78 +15,44 @@
   <script src="static/js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
-  <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.css" />
-
-<script type="text/javascript">
-  console.log("Inside script 1");
-    var defaultEvents = [
-    {
-        // Just an event
-        title: 'Test Event',
-        start: '2020-09-02',
-        className: 'scheduler_basic_event',
-        color:'black'
-    },
-];
-// Any value represanting monthly repeat flag
-var REPEAT_MONTHLY = 1;
-// Any value represanting yearly repeat flag
-var REPEAT_YEARLY = 2;
-    
-$('#calendar').fullCalendar({
-    header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-    },
-        editable: true,
-        // defaultDate: '2017-02-16',
-        eventSources: [defaultEvents],
-        dayRender: function( date, cell ) {
-        // Get all events
-        var events = $('#calendar').fullCalendar('clientEvents').length ? $('#calendar').fullCalendar('clientEvents') : defaultEvents;
-    }
-});
-</script>
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="static/vendor/chart.js/Chart.min.js"></script>
-  <script type='text/javascript'>
+
+
+<script type='text/javascript'>
   console.log("Inside this script");
- 
-  // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-// function number_format(number, decimals, dec_point, thousands_sep) {
-//   // *     example: number_format(1234.56, 2, ',', ' ');
-//   // *     return: '1 234,56'
-//   number = (number + '').replace(',', '').replace(' ', '');
-//   var n = !isFinite(+number) ? 0 : +number,
-//     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-//     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-//     dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-//     s = '',
-//     toFixedFix = function(n, prec) {
-//       var k = Math.pow(10, prec);
-//       return '' + Math.round(n * k) / k;
-//     };
-//   // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-//   s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-//   if (s[0].length > 3) {
-//     s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-//   }
-//   if ((s[1] || '').length < prec) {
-//     s[1] = s[1] || '';
-//     s[1] += new Array(prec - s[1].length + 1).join('0');
-//   }
-//   return s.join(dec);
-// }
 console.log('{{scores|tojson}}');
+console.log({{emotions|tojson}})
+console.log({{pieChartLabels|tojson}})
 window.onload = function() {
-
+  var ct = document.getElementById("pie-chart").getContext('2d');
+var myChart = new Chart(ct, {
+  type: 'pie',
+  data: {
+    labels: [{% for item in pieChartLabels %}
+"{{item}}",
+{% endfor %}],
+    datasets: [{
+      backgroundColor: [
+        "#ff6361",
+        "#ffa600",
+        "#58508d",
+        "#003f5c",
+        "#bc5090",
+        
+      ],
+      data: [{% for item in emotions %}
+                  {{item}},
+            {% endfor %}],
+      // data: [12, 19, 3, 17, 28]
+    }]
+  }
+});
 // Area Chart Example
+
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
@@ -185,14 +147,8 @@ var myLineChart = new Chart(ctx, {
   }
 });
 }
-
   </script>
-  <style type="text/css">
-    #calendar {
-        width:80%;
-        margin: 20px auto;
-    }
-</style>
+  
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
@@ -224,42 +180,12 @@ var myLineChart = new Chart(ctx, {
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Overview of the month</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Your emotions for the past 7 days</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                   <div class="chart-pie pt-4">
-                    <div id="cal-heatmap"></div>
-                      <script type="text/javascript">
-                        var cal = new CalHeatMap();
-                        cal.init({
-                          itemSelector: "#cal-heatmap",
-                          domain: "month",
-                          subDomain: "x_day",
-                          data: "static/datas-years.json",
-                          start: new Date(2000, 3, 5),
-                          cellSize: 17,
-                          cellPadding: 5,
-                          domainGutter: 20,
-                          range: 2,
-                          domainDynamicDimension: false,
-                          previousSelector: "#example-g-PreviousDomain-selector",
-                          nextSelector: "#example-g-NextDomain-selector",
-                          domainLabelFormat: function(date) {
-                            moment.lang("en");
-                            return moment(date).format("MMMM").toUpperCase();
-                          },
-                          subDomainTextFormat: "%d",
-                          legend: [20, 40, 60, 80],
-                          legendColors: {
-                            min: "#efefef",
-                            max: "steelblue",
-                            empty: "white"
-                            // Will use the CSS for the missing keys
-                          }
-
-                        });
-                      </script>
+                    <canvas id="pie-chart" height="280px"></canvas>
                   </div>
                   <hr>
                 </div>
@@ -270,7 +196,7 @@ var myLineChart = new Chart(ctx, {
         </div>
         <!-- /.container-fluid -->
 
-      </div>
+      
       <!-- End of Main Content -->
 
       <!-- Footer -->
@@ -283,11 +209,7 @@ var myLineChart = new Chart(ctx, {
       </footer>
       <!-- End of Footer -->
 
-    </div>
-    <!-- End of Content Wrapper -->
-
-  </div>
-  <!-- End of Page Wrapper -->
+   
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
