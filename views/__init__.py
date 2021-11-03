@@ -140,7 +140,6 @@ def deletePost():
     return "200"
 
 
-
 @app.route('/posts', methods=["Get"])
 def Posts():
 
@@ -190,12 +189,21 @@ def trustedHome():
         
         trusted_username = session["trusted_users"]
         trusted_by_list = trusted_users.getTrustedByUsernames(trusted_username)
-        scores = []
+        
+        scores, last_post, num_posts, streak = [], [], [], []
+
+        for user in trusted_by_list:
+            scores.append(users.getScoresForChart(user))
+            posts = users.getPost(user)
+            last_post.append(users.getFormattedDate(posts[-1][0]))
+            num_posts.append(len(posts))
+            streak.append(users.getCurrentStreak(user))
 
         labels = ["Monday", "Tuesday", "Wednesday",
                   "Thursday", "Friday", "Saturday", "Sunday"]
 
-        return render_template("trustedUserDashboard.html", scores = scores, labels = labels,user_list = trusted_by_list, username = session["trusted_users"])
+        print(last_post, num_posts)
+        return render_template("trustedUserDashboard.html", scores = scores, labels = labels,user_list = trusted_by_list, username = session["trusted_users"], last_post = last_post, num_posts = num_posts, streak = streak)
     else:
         return render_template("trusted_user_login.html")
         

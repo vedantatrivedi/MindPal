@@ -29,37 +29,6 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.css" />
 
-<script type="text/javascript">
-  console.log("Inside script 1");
-    var defaultEvents = [
-    {
-        // Just an event
-        title: 'Test Event',
-        start: '2020-09-02',
-        className: 'scheduler_basic_event',
-        color:'black'
-    },
-];
-// Any value represanting monthly repeat flag
-var REPEAT_MONTHLY = 1;
-// Any value represanting yearly repeat flag
-var REPEAT_YEARLY = 2;
-    
-$('#calendar').fullCalendar({
-    header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-    },
-        editable: true,
-        // defaultDate: '2017-02-16',
-        eventSources: [defaultEvents],
-        dayRender: function( date, cell ) {
-        // Get all events
-        var events = $('#calendar').fullCalendar('clientEvents').length ? $('#calendar').fullCalendar('clientEvents') : defaultEvents;
-    }
-});
-</script>
 <script src="static/vendor/chart.js/Chart.min.js"></script>
 <script type='text/javascript'>
 
@@ -67,13 +36,21 @@ $('#calendar').fullCalendar({
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-function show_chart(id, scores, labels, username) {
+function show_chart(id, scores, labels, username, last_post, num_posts, streak) {
+
+  console.log(last_post, num_posts)
+
+  $('.welcome').addClass('d-none')
+  $('.info').removeClass('d-none')
 
   $('.username')[0].innerHTML = username
   $('.user_description')[0].innerHTML = 'Here is an overview of ' + username+ "'s thoughts in the past few days"
+  $('.total_entries')[0].innerHTML = num_posts
+  $('.last_entry')[0].innerHTML = last_post
+  $('.streak')[0].innerHTML = streak
+
 
   var ctx = document.getElementById("chart");
-  console.log(id, scores, labels)
   var myLineChart = new Chart(ctx, {
       type: 'line',
       data: {
@@ -183,7 +160,7 @@ function show_chart(id, scores, labels, username) {
             <h6 class="collapse-header">Users:</h6>
 
             {% for user in user_list %}
-              <a class="collapse-item" onclick="show_chart({{loop.index}}, {{scores[loop.index-1]}}, {{labels}}, '{{user_list[loop.index-1]}}')">{{user}}</a>
+              <a class="collapse-item" onclick="show_chart({{loop.index}}, {{scores[loop.index-1]}}, {{labels}}, '{{user_list[loop.index-1]}}', '{{last_post[loop.index-1]}}', '{{num_posts[loop.index-1]}}', {{streak[loop.index-1]}})">{{user}}</a>
             {% endfor%}
 
           </div>
@@ -224,10 +201,33 @@ function show_chart(id, scores, labels, username) {
           </div>
         </div>
 
-      <div class="container mt-5">
+      <div class="welcome container">
 
-        <h1 class="h2 mb-2 text-gray-800 username"></h1>
-        <p class="mb-4 user_description"></a>.</p>
+        <div class="d-sm-flex align-items-center justify-content-between m-4">
+          <h1 class="h3 mb-0 text-gray-600">Trusted User Dashboard</h1>
+        </div>
+        
+        <div class="row shadow-lg mt-5">
+
+          <div class="col-md-6 col-12 text-center p-5">
+            <div class="display-4 text-gray-900 m-2"> Hey, {{username}}! </div>
+            <div class="display-4 text-gray-600 m-5">
+              Check up on your loved ones
+            </div>
+          </div>
+
+          <div class="col-md-6 col-12">
+            <img src="static/img/trusted-users.gif" class="img-fluid">
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="container info mt-5 d-none">
+
+        <div class="mb-2 text-gray-800 username h1"></div>
+        <div class="mb-4 h5 user_description"></div>
 
           <div class="row graph_rows">
 
@@ -235,12 +235,12 @@ function show_chart(id, scores, labels, username) {
 
               <div class="row mb-5">
 
-                <div class="card border-left-primary shadow w-100 h-100 py-2">
+                <div class="card border-left-primary shadow w-100 h-100 py-2 mt-4">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Current Streak</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">100</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Entries</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 total_entries"></div>
                       </div>
                       <div class="col-auto">
                         <i class="fas fa-angle-double-right fa-2x text-gray-300"></i>
@@ -253,12 +253,12 @@ function show_chart(id, scores, labels, username) {
 
               <div class="row mb-5">
 
-                <div class="card border-left-primary shadow w-100 h-100 py-2">
+                <div class="card border-left-warning shadow w-100 h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Current Streak</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ currStreak }}</div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Last Entry</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 last_entry"></div>
                       </div>
                       <div class="col-auto">
                         <i class="fas fa-angle-double-right fa-2x text-gray-300"></i>
@@ -272,12 +272,12 @@ function show_chart(id, scores, labels, username) {
 
               <div class="row mb-5">
 
-                <div class="card border-left-primary shadow w-100 h-100 py-2">
+                <div class="card border-left-success shadow w-100 h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Current Streak</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ currStreak }}</div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Current Streak</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800 streak"></div>
                       </div>
                       <div class="col-auto">
                         <i class="fas fa-angle-double-right fa-2x text-gray-300"></i>
