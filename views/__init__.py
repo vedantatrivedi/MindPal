@@ -259,7 +259,11 @@ def charts():
     scores = users.getScoresForChart(session["username"])
     labels = ["Monday", "Tuesday", "Wednesday",
               "Thursday", "Friday", "Saturday", "Sunday"]
-    return render_template("charts.html", scores=scores, labels=labels, user=session["username"])
+    emotion_labels = ["Sadness", "Joy","Fear","Disgust", "Anger"]
+    emotions = users.getPieChartData(session["username"])
+    emotion_percentages = list(emotions.values())
+    print(emotion_percentages)
+    return render_template("charts.html", pieChartLabels = emotion_labels,emotions = emotion_percentages,scores=scores, labels=labels, user=session["username"])
 
 # Tables Page
 @app.route('/tables', methods=["GET"])

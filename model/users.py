@@ -247,23 +247,30 @@ def getScoresForChart(username):
     return rounded_scores
 
 
-def getScoresForPieChart(username):
-    user = db.users.find_one({"username": session["username"]})
-    print(session["username"])
-    # print(user)
-    scores = user["scores"]
-    return_score = np.array(scores).flatten().tolist()
-    rounded_scores = [round(num) for num in return_score]
-    print(rounded_scores)
-    happy_elements = [element for element in rounded_scores if element >= 90]
-    med_elements = [
-        element for element in rounded_scores if element >= 70 and element < 90]
-    unhappy_elements = [element for element in rounded_scores if element < 70]
-    happy_score = len(happy_elements)
-    med_score = len(med_elements)
-    unhappy_score = len(unhappy_elements)
-    pie_chart_data = [happy_score, med_score, unhappy_score]
-    return pie_chart_data
+def getPieChartData(username):
+    posts = getPost(username,limit = 7)
+    if(len(posts) == 0):
+        return false
+    
+    sadness = joy = fear = disgust = anger = 0
+    for post in posts:
+        emotions = get_emotions(post[1])
+        doc = json.loads(emotions)
+        sadness = sadness + doc["sadness"]
+        joy = joy + doc['joy']
+        fear = fear + doc['fear']
+        disgust = disgust + doc['disgust']
+        anger = anger + doc['anger']
+        
+    total = sadness + joy + disgust + anger + fear
+    sadness = (sadness/total)*100
+    joy = (joy/total)*100
+    disgust = (disgust/total)*100
+    anger = (anger/total)*100
+    fear = (fear/total)*100
+    return_data = {"Sadness": sadness, "Joy": joy, "Fear":fear, "Disgust":disgust,"Anger":anger}
+    return return_data
+    
 
 
 def check_low_scores(username):
