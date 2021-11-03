@@ -27,7 +27,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-address-book" aria-hidden="true"></i>
         </div>
@@ -44,16 +44,43 @@
           <span>Dashboard</span></a>
       </li>
 
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Posts -->
       <li class="nav-item">
         <a class="nav-link" href="/posts">
           <i class="fas fa-fw fa-book"></i>
           <span>Posts</span></a>
       </li>
 
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Trusted User -->
+      <li class="nav-item">
+        <a class="nav-link" href="/trusted-user">
+          <i class="fas fa-user-friends"></i>
+          <span>Trusted Users</span></a>
+      </li>
+
 
       <!-- Divider -->
       <hr class="sidebar-divider">
 
+      <!-- Nav Item - Overview -->
+      <li class="nav-item">
+        <a class="nav-link" href="/charts">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Overview</span></a>
+      </li>
+
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+
+    
       <!-- Heading -->
       <!-- <div class="sidebar-heading">
         Interface
@@ -75,8 +102,8 @@
       </li> -->
 
       <!-- Nav Item - Utilities Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+      <!-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-fw fa-wrench"></i>
           <span>Utilities</span>
         </a>
@@ -86,10 +113,10 @@
             <a class="collapse-item" href="/add-trusted-user">Add a user</a>
           </div>
         </div>
-      </li>
+      </li> -->
 
       <!-- Divider -->
-      <hr class="sidebar-divider">
+      <!-- <hr class="sidebar-divider"> -->
 
       <!-- Heading -->
       <!-- <div class="sidebar-heading">
@@ -117,11 +144,11 @@
       </li> -->
 
       <!-- Nav Item - Charts -->
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="/charts">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Overview</span></a>
-      </li>
+      </li> -->
 
       <!-- Nav Item - Tables -->
       <!-- <li class="nav-item">
@@ -131,7 +158,7 @@
       </li> -->
 
       <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
+      <!-- <hr class="sidebar-divider d-none d-md-block"> -->
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
@@ -172,7 +199,7 @@
 
             <!-- Nav Item - Search Dropdown (Visible Only XS) -->
             <li class="nav-item dropdown no-arrow d-sm-none">
-              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-search fa-fw"></i>
               </a>
               <!-- Dropdown - Messages -->
@@ -241,7 +268,7 @@
 
             <!-- Nav Item - Messages -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <!-- <i class="fas fa-envelope fa-fw"></i> -->
                 <i class="fas fa-comments"></i>
                 <!-- Counter - Messages -->
@@ -292,7 +319,7 @@
 
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                   {{username}}
                 </span>
@@ -313,7 +340,7 @@
                   Activity Log
                 </a> -->
                 <!-- <div class="dropdown-divider"></div> -->
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>

@@ -130,7 +130,30 @@ def getScores(username):
 def getTrustedUsers(username):
     
     userDoc = db.users.find_one({"username": username})
-    return list(set(userDoc['trustedUser']))
+    unique_list = list(set(userDoc['trustedUser']))
+    db.users.update({"username": username}, { "$set": { 'trustedUser' : unique_list}})
+
+    return unique_list
+
+def getTrustedInfo(trusted_user_list):
+
+    info = []
+
+    for trusted_user in trusted_user_list:
+        trustedDoc = db.trusted.find_one({"username": trusted_user})
+        info.append(trustedDoc)
+
+    return info
+
+def removeTrustedUser(username, trusted_user):
+
+    userDoc = db.users.find_one({"username": username})
+    user_id = str(userDoc['_id'])
+
+    print(username, trusted_user, user_id)
+    db.users.update({"username": username}, {'$pull': {"trustedUser": trusted_user}})
+    db.trusted.update({"username": trusted_user}, {'$pull': {"trusted-by-id": user_id}})
+    
 
 def getEmailofTrustedUsers(username):
 

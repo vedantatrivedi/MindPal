@@ -278,11 +278,19 @@ def utilitiesborder():
     return render_template("utilities-border.html")
 
 #Utilities-color
-@app.route('/add-trusted-user', methods=["GET","POST"])
-def addtrusted():
+@app.route('/trusted-user', methods=["GET","POST"])
+def trustedUser():
     
+
+    if "username" not in session:
+        return redirect(url_for("home"))
+
+
     if request.method == "GET":
-        return render_template("add_trusted_user.html")
+
+        trusted_user = users.getTrustedUsers(session['username'])
+        trusted_users_info = users.getTrustedInfo(trusted_user)
+        return render_template("trusted_user.html", trusted_users = trusted_users_info)
 
     elif request.method == "POST":
 
@@ -299,14 +307,14 @@ def addtrusted():
             else:
 
                 flash('Please create a new Trusted user')
-                return render_template('add_trusted_user.html')
+                return render_template('trusted_user.html')
 
         response = trusted_users.createTrustedUser(session["username"])
 
         # Trusted user with same username exists, so providing option to add this user or create new
         if(response != True):
             flash('Username already exists with email ' + response)
-            return render_template('add_trusted_user.html', showButton = True, user = request.form['username'], name = request.form['name'], mail = response)
+            return render_template('trusted_user.html', showButton = True, user = request.form['username'], name = request.form['name'], mail = response)
         
         # Creating new trusted User, sending mail for setting password
         if(oauth.checkOAuthToken()):
@@ -318,15 +326,42 @@ def addtrusted():
             send_mail_thread = threading.Thread(target=email_service.send_set_pass_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['username'], session["username"], link, token['refresh_token']))
             send_mail_thread.start()
 
+        return redirect(url_for("trustedUser"))
+
+@app.route('/deleteTrustedUser', methods=["GET"])
+def deleteTrustedUser():
+
+    if('username' not in session):
         return redirect(url_for("home"))
 
+    users.removeTrustedUser(session['username'], request.args.get('name'))    
+    return "200"
+
+@app.route('/resendMail', methods=["GET"])
+def resendMail():
+
+    if('username' not in session):
+        return redirect(url_for("home"))
+
+    if(oauth.checkOAuthToken()):
+
+        hashedUsername = trusted_users.getHashedUserName(request.args.get('name'))
+        token = oauth.getOAuthToken()
+        link = request.url_root + 'set_password?user=' + hashedUsername
+
+        send_mail_thread = threading.Thread(target=email_service.send_set_pass_mail, args=('dornumofficial@gmail.com', request.args.get('email'), request.args.get('name'), session["username"], link, token['refresh_token']))
+        send_mail_thread.start()
+
+    return "200"
+
+
 # Testing endpoint for sending mail 
-@app.route('/send_mail', methods=["GET"])
-def send_mail():
-    token = oauth.getOAuthToken()
-    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token']))
-    send_mail_thread.start()
-    return redirect(url_for("home"))
+# @app.route('/send_mail', methods=["GET"])
+# def send_mail():
+#     token = oauth.getOAuthToken()
+#     send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token']))
+#     send_mail_thread.start()
+#     return redirect(url_for("home"))
 
 @app.route( '/currentStreak', methods=[ "Get" ] )
 def currentStreak():
