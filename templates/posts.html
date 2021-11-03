@@ -49,7 +49,7 @@
                     {% block content %}
                     {% for post,dates in posts|zip(dates) %}
 
-                    <a class="px-0 col-md-4 col-sm-6 p-3 mb-2"  data-bs-toggle="modal" data-bs-target="#post{{loop.index}}">
+                    <a class="px-0 col-md-4 col-sm-6 p-3 mb-2 animated--grow-in"  data-bs-toggle="modal" data-bs-target="#post{{loop.index}}">
                       <div class="bg-white shadow" style="border-radius: 10px;" data-bs-toggle="tooltip" data-bs-html="true" title="Click to edit">
                         <div class=" m-2 py-2">
                           <div class="p-1 border-left-primary">
