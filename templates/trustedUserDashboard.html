@@ -36,9 +36,15 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-function show_chart(id, scores, labels, username, last_post, num_posts, streak) {
+function show_home(){
 
-  console.log(last_post, num_posts)
+  $('.welcome').removeClass('d-none')
+  $('.info').addClass('d-none')
+
+}
+
+
+function show_chart(id, scores, labels, username, last_post, num_posts, streak) {
 
   $('.welcome').addClass('d-none')
   $('.info').removeClass('d-none')
@@ -144,11 +150,21 @@ function show_chart(id, scores, labels, username, last_post, num_posts, streak) 
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-address-book" aria-hidden="true"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Muse </div>
+        <div class="sidebar-brand-text mx-3"> MindPal </div>
       </a>
 
 
       <hr class="sidebar-divider my-0">
+
+      <li class="nav-item">
+        <a class="nav-link" onclick="show_home()">
+          <i class="fas fa-home"></i>
+          Home
+        </a>
+      </li>
+
+      <hr class="sidebar-divider my-0">
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
@@ -176,6 +192,7 @@ function show_chart(id, scores, labels, username, last_post, num_posts, streak) 
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           Logout
         </a>
+      </li>
   
     </ul>
 
@@ -310,7 +327,7 @@ function show_chart(id, scores, labels, username, last_post, num_posts, streak) 
           <footer class="sticky-footer bg-white">
             <div class="container my-auto">
               <div class="copyright text-center my-auto">
-                <span>Muse - 2021</span>
+                <span>MindPal - 2021</span>
               </div>
             </div>
           </footer>

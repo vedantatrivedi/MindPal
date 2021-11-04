@@ -275,7 +275,7 @@ def getPieChartData(username):
 
 def check_low_scores(username):
 
-    posts = getPost(username, limit = 7)
+    posts = getPost(username, limit = 15)
 
     if(len(posts) == 0):
         return False

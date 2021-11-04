@@ -129,7 +129,7 @@ def send_welcome_mail(fromaddr, toaddr, user_name, refresh_token):
 
     template = env.get_template('welcome_email.html')
     output = template.render(username=user_name)
-    send_mail(fromaddr, toaddr, "Welcome to Muse!", output, refresh_token)
+    send_mail(fromaddr, toaddr, "Welcome to Mindpal!", output, refresh_token)
 
     return True
 
@@ -138,7 +138,7 @@ def send_set_pass_mail(fromaddr, toaddr, trusted_username, username, link, refre
     print("SEND MAIL", link)
     template = env.get_template('trusted_user_set_email.html')
     output = template.render(trusted_username = trusted_username, username = username, link = link)
-    send_mail(fromaddr, toaddr, "Welcome to Muse!", output, refresh_token)
+    send_mail(fromaddr, toaddr, "Welcome to Mindpal!", output, refresh_token)
 
     return True
 

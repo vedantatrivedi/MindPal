@@ -3,7 +3,7 @@
   <br>
   <a href="https://ibb.co/7jnsxZB"><img src="https://i.ibb.co/Dz90Pvm/9-L6pugn-Gk-Ea-R5-NQ9-A4-M2-Zu-P-4i-Sz2-O315f-MT90-Bf-NWls-AWk-Uh-MHupwaho4-AS5-YJZ-CA-w1200-h630-p.jpg" alt="9-L6pugn-Gk-Ea-R5-NQ9-A4-M2-Zu-P-4i-Sz2-O315f-MT90-Bf-NWls-AWk-Uh-MHupwaho4-AS5-YJZ-CA-w1200-h630-p" border="0"></a>
   <br>
-  Muse - The Smart Journal
+  MindPal - The Smart Journal
   <br>
 </h1>
 

@@ -17,7 +17,7 @@ def home():
 
         trusted_users = users.getTrustedUsers(session['username'])
 
-        # Checking if last 7 entries have low score and last mail sent greater than 15 days
+        # Checking if last 15 entries have low score and last mail sent greater than 15 days
         check_low = users.check_low_scores(session['username'])
         if(check_low == True):
 
@@ -31,6 +31,7 @@ def home():
                     send_mail_thread.start()
                     users.set_last_email_date(session['username'])
 
+            # TODO : send Report if low score in last 15 days
 
 
         return render_template('index.html', username=session["username"], trusted_users=trusted_users,currStreak = users.getCurrentStreak(session['username']),maxStreak = users.getMaxStreak(session['username']))
@@ -179,6 +180,7 @@ def trusted_user_login():
         if "trusted_users" not in session:
             return render_template("trusted_user_login.html")
         else:
+            session.clear()
             return redirect('/trusted_user_dashboard')
         
 
@@ -195,7 +197,7 @@ def trustedHome():
         for user in trusted_by_list:
             scores.append(users.getScoresForChart(user))
             posts = users.getPost(user)
-            last_post.append(users.getFormattedDate(posts[-1][0]))
+            last_post.append(users.getFormattedDate(posts[0][0]))
             num_posts.append(len(posts))
             streak.append(users.getCurrentStreak(user))
 
@@ -501,6 +503,7 @@ def set_password():
 
     elif request.method == "POST":
 
+        session.clear()
         trusted_users.TrustedUserSetPass()
         return redirect(url_for("login"))
 

@@ -8,29 +8,30 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Journal Entries</h1>
+            <div class="row justify-content-between w-100">
+              <h1 class="h3 mb-0 text-gray-800">Journal Entries</h1>
+              <div class="btn col-3" data-bs-toggle="modal" data-bs-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div>
+            </div>
           </div>
 
 
           <!-- Content Row -->
           <div class="card shadow mb-4 ">
             <!-- Card Header - Accordion -->
-            <div href="#addPost" class="card-header py-3 m-0 row">
+            <div class="card-header py-3 m-0 row">
               <div class="col-9"><h6 class="m-0 font-weight-bold text-primary">Tell us about your day!</h6></div>
-              <!-- <div class="btn align-self-end col-sm-auto mr-2" data-bs-toggle="modal" data-bs-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div> -->
-              <div class="col text-right"><a href="#addPost"data-bs-toggle="collapse" role="button" aria-expanded="true"><i class="fas fa-angle-down"></i></a></div>
+              <div class="col text-right"><a href="#addPost" data-bs-toggle="collapse" role="button" aria-expanded="true"><i class="fas fa-angle-down"></i></a></div>
             </div>
 
-                  <form class="user" method="POST" action="/addPost">
-                    <div class="card-body">
+            <form class="user collapse show" method="POST" action="/addPost" id="addPost">
+              <div class="card-body">
 
-                      {{ ckeditor.create() }}
-                      {{ ckeditor.config(height=300) }}
+                {{ ckeditor.create() }}
+                {{ ckeditor.config(height=300) }}
 
-                      <button id="SubmitPostButton" class="btn btn-primary btn-user btn-block mt-2" name ="journal_entry">Add post</button>
-                    </div>
-                  </form>
-              </form>
+                <button id="SubmitPostButton" class="btn btn-primary btn-user btn-block mt-2" name ="journal_entry">Add post</button>
+              </div>
+            </form>
 
           </div>
 
@@ -121,7 +122,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Muse - 2021</span>
+            <span>MindPal - 2021</span>
           </div>
         </div>
       </footer>
@@ -139,198 +140,28 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
-        <div class="modal-body" style="font-size: 1.25rem">
+        <div class="modal-body" >
 
-          <div class="text-center mb-3">
+          <div class="text-center mb-3" style="font-size: 1.25rem">
             <h2>Untangle your thoughts</h2>
           </div>
 
-          <div class="row justify-content-around">
-            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#self_reflection" style="background:#fff1ed;color:#df4e61;">Self Reflection</div>
-            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#gratitude" style="background:#fff1ed;color:#df4e61;">Gratitude</div>
+          <div class="row justify-content-around" style="font-size: 1.25rem">
+            <div class="col-5 btn m-2 font-weight-bold" data-dismiss="modal" style="background:#fff1ed;color:#df4e61;" onclick="addPrompts(0)">Self Reflection</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-dismiss="modal" style="background:#fff1ed;color:#df4e61;" onclick="addPrompts(1)">Gratitude</div>
           </div>
 
-          <div class="row justify-content-around">
-            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#anxiety" style="background:#fff1ed;color:#df4e61;">Anxiety</div>
-            <div class="col-5 btn m-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#self_love" style="background:#fff1ed;color:#df4e61;">Self Love</div>
+          <div class="row justify-content-around" style="font-size: 1.25rem">
+            <div class="col-5 btn m-2 font-weight-bold" data-dismiss="modal" style="background:#fff1ed;color:#df4e61;" onclick="addPrompts(2)">Anxiety</div>
+            <div class="col-5 btn m-2 font-weight-bold" data-dismiss="modal" style="background:#fff1ed;color:#df4e61;" onclick="addPrompts(3)">Self Love</div>
           </div>
 
-          <!-- <div class="row">
-            <div class="col-4 btn m-2 font-weight-bold" data-toggle="modal" data-target="#random" style="background:#fff1ed;color:#df4e61;">Random</div>
-          </div> -->
+          <div class="xs p-2 text-center">Click on any of the above buttons to get 3 randomly generated prompts for those topics</div>
+
       </div>
 
     </div>
   </div>
-
-
-  <div class="modal fade m-2" id="self_reflection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Self Reflection</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class=" self_reflection_content">
-        1. My favorite way to spend the day is ? <br>
-        2. I feel most energized when ? <br>
-        3. I feel happiest in my skin when ? <br>
-        4. What makes you feel calm and in control? <br>
-        5. Make a list of 5 things that make you smile. <br>
-        6. Make a list of everything that inspires you. <br>
-        7. What’s one topic you need to learn more about to help you live a more fulfilling life? <br>
-        8. What's a goal you want to accomplish and why? <br><br>
-        <!-- 9. How can you celebrate yourself today? <br><br> -->
-      </div>
-      <!-- <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn" style="background:#df4e61;color:#fff1ed;" onclick="$('.cke_editable cke_editable_themed cke_contents_ltr')[0].innerHTML += ('Self Reflection  <br>' + $('.self_reflection_content')[0].innerHTML)">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_reflection" >Back to Self</div>
-        </div>
-      </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade m-2" id="gratitude" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Gratitude</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="gratitude_content">
-        1. What’s something that you’re looking forward to?<br>
-        2. What’s a simple pleasure that you’re grateful for?<br>
-        3. Write about something you are grateful for with your work or personal life. <br>
-        4. Remember a success you had and write a thank-you speech describing who helped you reach it. <br>
-        5. Describe your favorite person and list all of that person’s good qualities.<br>
-        6. Write about something someone else did that made you happy. <br>
-        <!-- Describe your favourite hobby<br> -->
-        <!-- Look around the room and write about everything you see that you’re grateful for.<br> -->
-        7. Write about 3 things you’re grateful for today.  <br><br>
-      </div>
-      <!-- <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Gratitude <br>' + $('.gratitude_content')[0].innerHTML )">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#gratitude">Back to Self</div>
-        </div>
-      </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade m-2" id="self_love" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Self Love</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="self_love_content">
-        1. Write down three of your greatest strengths. Give actions, behaviours and accomplishments.<br>
-        2. List three things or people you are grateful for in your life.<br>
-        3. Dream about your perfect day. Describe what you would do, who you would be with, and what it would feel like.<br>
-        4. Talk about a recent win and how it shows a positive quality or characteristic that you have.<br>
-        5. Think of a recent challenge you were faced with and how you persisted despite the outcome.<br>
-        6. Think about your meaningful relationships. Write about how they have impacted you as well as how you have affected them.<br>
-        7. Write about qualities that make you unique<br>
-        8. What is your ideal future? Include skills and attributes to places and people.<br><br>
-      </div>
-      <!-- <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=  (' Self Love <br>' + $('.self_love_content')[0].innerHTML )">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#self_love">Back to Self</div>
-        </div>
-      </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade m-2" id="random" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Random</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="random_content">
-        1. Write a letter to your teenage self.<br>
-        2. Make a bucket list of the things you want to do.<br><br>
-      </div>
-      <!-- <div class="row mt-2">
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML += $('.random_content')[0].innerHTML">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#random">Back to Self</div>
-        </div>
-      </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade m-2" id="anxiety" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Anxiety</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body m-2" style="font-size: 1.10rem">
-          <div class="anxiety_content">
-        1. Without thinking twice, write down everything that's on your mind.<br>
-        2. Finish the sentence "Right now, I am ..", then finish the sentence "I want to be ..".<br>
-        3. If something is making you anxious, what triggered it?<br>
-        4. What am I holding onto that I need to release? How can I turn those it into something positive?
-        5. Choose one problem that has been causing you anxiety lately, and ask yourself questions about it, like a friend.
-           Ask supportive and encouraging questions, and answer them with complete honesty.<br>
-        6. What is working perfectly in my life right now, despite any adversity I may be facing?<br>
-        7. What are some things I look forward to?<br>
-        8. What would it look like to resolve the issues I’m facing? How would I act, think and feel?<br><br>
-      </div>
-      <!-- <div class="row mt-2"><br>
-        <div class="col-5 text-left">
-        <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" onclick="$('iframe')[1].innerHTML +=('Anxiety <br>' + $('.anxiety_content')[0].innerHTML)">Add to Space</div>
-        </div>
-        <div class="col-2"></div>
-        <div class="col-5 text-right">
-          <div class="btn font-weight-bold" style="background:#df4e61;color:#fff1ed;" data-toggle="modal" data-target="#anxiety">Back to Self</div>
-        </div> -->
-      </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
@@ -389,6 +220,78 @@
 
     }
 
+    // Prompts code
+
+    self_reflection = [
+        'My favorite way to spend the day is ?', 
+        'I feel most energized when ? ', 
+        'I feel happiest in my skin when ? ', 
+        'What makes you feel calm and in control? ', 
+        'Make a list of 5 things that make you smile. ', 
+        'Make a list of everything that inspires you. ', 
+        'What’s one topic you need to learn more about to help you live a more fulfilling life? ', 
+        'What’s a goal you want to accomplish and why?'
+    ];
+
+    gratitude = [
+        'What’s something that you’re looking forward to?',
+        'What’s a simple pleasure that you’re grateful for?',
+        'Write about something you are grateful for with your work or personal life. ',
+        'Remember a success you had and write a thank-you speech describing who helped you reach it. ',
+        'Describe your favorite person and list all of that person’s good qualities.',
+        'Write about something someone else did that made you happy.' ,
+        'Describe your favourite hobby',
+        'Look around the room and write about everything you see that you’re grateful for.',
+        'Write about 3 things you’re grateful for today. '
+    ];
+
+    anxiety = [
+        'Finish the sentence "Right now, I am ..", then finish the sentence "I want to be .." .',
+        'If something is making you anxious, what triggered it?',
+        'What am I holding onto that I need to release?',
+        'Choose one problem that has been causing you anxiety lately, and ask yourself questions about it, like a friend. Ask supportive and encouraging questions, and answer them with complete honesty',
+        'What is working perfectly in my life right now, despite any adversity I may be facing',
+        'What are some things I look forward to',
+        'What would it look like to resolve the issues I’m facing? How would I act, think and feel'
+      ];
+    
+    self_love = [
+        'Write down three of your greatest strengths. Give actions, behaviours and accomplishments.',
+        'List three things or people you are grateful for in your life.',
+        'Dream about your perfect day. Describe what you would do, who you would be with, and what it would feel like.',
+        'Talk about a recent win and how it shows a positive quality or characteristic that you have.',
+        'Think of a recent challenge you were faced with and how you persisted despite the outcome.',
+        'Think about your meaningful relationships. Write about how they have impacted you as well as how you have affected them.',
+        'Write about qualities that make you unique',
+        'What is your ideal future? Include skills and attributes to places and people'
+    ];
+    
+
+    function addPrompts(index){
+
+      arr = self_love
+
+      if(index == 0)
+        arr = self_reflection
+      else if(index == 1)
+        arr = gratitude
+      else if (index == 2)
+        arr = anxiety
+
+      size = arr.length
+      prev = [-1,-1];
+
+      for(var i=0;i<3;i++){
+        x = Math.floor((Math.random() * size));
+        if( (i>0 && x == prev[i-1]) || (i>1 && x == prev[i-2])){
+          i--;
+          continue;
+        }
+        prev[i] = x
+        CKEDITOR.instances['ckeditor'].insertHtml(arr[x] + "<br/> <br/>");
+      }
+      
+    }
 
   </script>
 
