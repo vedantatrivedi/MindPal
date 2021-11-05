@@ -27,6 +27,7 @@ Chart.defaults.global.defaultFontColor = '#858796';
 console.log('{{scores|tojson}}');
 console.log({{emotions|tojson}})
 console.log({{pieChartLabels|tojson}})
+
 window.onload = function() {
   var ct = document.getElementById("pie-chart").getContext('2d');
 var myChart = new Chart(ct, {
@@ -106,10 +107,6 @@ var myLineChart = new Chart(ctx, {
         ticks: {
           maxTicksLimit: 10,
           padding: 10,
-          // Include a dollar sign in the ticks
-          // callback: function(value, index, values) {
-          //   return value;
-          // }
         },
         gridLines: {
           color: "rgb(234, 236, 244)",
@@ -137,12 +134,6 @@ var myLineChart = new Chart(ctx, {
       intersect: false,
       mode: 'index',
       caretPadding: 10,
-      // callbacks: {
-      //   label: function(tooltipItem, chart) {
-      //     var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-      //     return datasetLabel + ': $' + tooltipItem.yLabel;
-      //   }
-      // }
     }
   }
 });
@@ -164,7 +155,7 @@ var myLineChart = new Chart(ctx, {
               <!-- Area Chart -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Overview of the last 7 days</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Overview of the last 15 days</h6>
                 </div>
                 <div class="card-body">
                   <div class="chart-area">
@@ -180,7 +171,7 @@ var myLineChart = new Chart(ctx, {
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Your emotions for the past 7 days</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Your emotions for the past 15 days</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">

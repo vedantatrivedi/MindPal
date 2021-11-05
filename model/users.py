@@ -10,6 +10,7 @@ from datetime import datetime
 import calendar
 import json
 import numpy as np
+import threading
 
 # Post structure - [Date, Post, Score]
 
@@ -120,17 +121,22 @@ def getScores(username):
     myquery = {"username": username}
     userDoc = db.users.find_one(myquery)
     posts = userDoc["posts"]
-    scores = []
+    scores, dates = [], []
 
     for entry in posts:
         scores.append(entry[2])
+        dates.append(getFormattedDate(entry[0]))
 
-    return scores
+    return scores, dates
 
 def getTrustedUsers(username):
     
     userDoc = db.users.find_one({"username": username})
-    unique_list = list(set(userDoc['trustedUser']))
+    trusted_users = userDoc.get('trustedUser')
+    if(trusted_users == None):
+        return []
+    
+    unique_list = list(set(userDoc.get('trustedUser')))
     db.users.update({"username": username}, { "$set": { 'trustedUser' : unique_list}})
 
     return unique_list
@@ -241,36 +247,40 @@ def getDayfromDate(date):
 
 
 def getScoresForChart(username):
-    scores = getScores(username)[-7:]
+    scores, dates = getScores(username)[-15:]
     return_score = np.array(scores).flatten().tolist()
     rounded_scores = [round(num) for num in return_score]
-    return rounded_scores
+    return rounded_scores, dates
 
 
 def getPieChartData(username):
-    posts = getPost(username,limit = 7)
+    
+    posts = getPost(username,limit = 15)
     if(len(posts) == 0):
         return false
     
-    sadness = joy = fear = disgust = anger = 0
+    emotions_list = ['sadness', 'joy', 'fear', 'disgust', 'anger']
+    dic = {}
+
+    for emotion in emotions_list:
+        dic[emotion] = 0
+
     for post in posts:
         emotions = get_emotions(post[1])
         doc = json.loads(emotions)
-        sadness = sadness + doc["sadness"]
-        joy = joy + doc['joy']
-        fear = fear + doc['fear']
-        disgust = disgust + doc['disgust']
-        anger = anger + doc['anger']
-        
-    total = sadness + joy + disgust + anger + fear
-    sadness = (sadness/total)*100
-    joy = (joy/total)*100
-    disgust = (disgust/total)*100
-    anger = (anger/total)*100
-    fear = (fear/total)*100
-    return_data = {"Sadness": sadness, "Joy": joy, "Fear":fear, "Disgust":disgust,"Anger":anger}
+
+        for emotion in emotions_list:
+            dic[emotion] = dic[emotion] + doc[emotion]
+
+    total = 0
+    for emotion in emotions_list:
+        total += dic[emotion]
+
+    for emotion in emotions_list:
+        dic[emotion] = 100 * (dic[emotion] / total)
+
+    return_data = {"Sadness": dic['sadness'], "Joy": dic['joy'], "Fear": dic['fear'], "Disgust": dic['disgust'],"Anger": dic['anger'] }
     return return_data
-    
 
 
 def check_low_scores(username):
@@ -281,10 +291,10 @@ def check_low_scores(username):
         return False
     
     mean_score = 0
-    for i in range(min(len(posts), 7)):
+    for i in range(min(len(posts), 15)):
         mean_score += posts[i][2]
 
-    mean_score = mean_score/min(len(posts), 7)
+    mean_score = mean_score/min(len(posts), 15)
     print("Score :", mean_score, username)
     if(mean_score < -25):
         return True

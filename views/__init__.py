@@ -192,20 +192,20 @@ def trustedHome():
         trusted_username = session["trusted_users"]
         trusted_by_list = trusted_users.getTrustedByUsernames(trusted_username)
         
-        scores, last_post, num_posts, streak = [], [], [], []
+        scores, last_post, num_posts, streak, labels = [], [], [], [], []
 
         for user in trusted_by_list:
-            scores.append(users.getScoresForChart(user))
+
+            scores_list = users.getScoresForChart(user)
+            scores.append(scores_list[0])
+            labels.append(scores_list[1])
+
             posts = users.getPost(user)
             last_post.append(users.getFormattedDate(posts[0][0]))
             num_posts.append(len(posts))
             streak.append(users.getCurrentStreak(user))
 
-        labels = ["Monday", "Tuesday", "Wednesday",
-                  "Thursday", "Friday", "Saturday", "Sunday"]
-
-        print(last_post, num_posts)
-        return render_template("trustedUserDashboard.html", scores = scores, labels = labels,user_list = trusted_by_list, username = session["trusted_users"], last_post = last_post, num_posts = num_posts, streak = streak)
+        return render_template("trustedUserDashboard.html", scores = scores, labels = labels, user_list = trusted_by_list, username = session["trusted_users"], last_post = last_post, num_posts = num_posts, streak = streak)
     else:
         return render_template("trusted_user_login.html")
         
@@ -266,9 +266,9 @@ def cards():
 # Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
-    scores = users.getScoresForChart(session["username"])
-    labels = ["Monday", "Tuesday", "Wednesday",
-              "Thursday", "Friday", "Saturday", "Sunday"]
+    scores, labels = users.getScoresForChart(session["username"])
+    # labels = ["Monday", "Tuesday", "Wednesday",
+    #           "Thursday", "Friday", "Saturday", "Sunday"]
     emotion_labels = ["Sadness", "Joy","Fear","Disgust", "Anger"]
     emotions = users.getPieChartData(session["username"])
     emotion_percentages = list(emotions.values())
@@ -293,7 +293,6 @@ def utilitiesborder():
 #Utilities-color
 @app.route('/trusted-user', methods=["GET","POST"])
 def trustedUser():
-    
 
     if "username" not in session:
         return redirect(url_for("home"))
@@ -505,7 +504,7 @@ def set_password():
 
         session.clear()
         trusted_users.TrustedUserSetPass()
-        return redirect(url_for("login"))
+        return redirect(url_for("trustedUser"))
 
 @app.route('/getEntries',methods = ["GET"])
 def getEntries():

@@ -35,7 +35,9 @@ def get_emotions(journal_text):
         return_data = {"sadness": sadness, "joy": joy, "fear":fear, "disgust":disgust,"anger":anger}
         return (json.dumps(return_data,indent = 2))
     except:
-        return 0
+        return_data = {"sadness": 0, "joy": 0, "fear":0, "disgust":0,"anger":0}
+        return (json.dumps(return_data,indent = 2))
+
 
     
     

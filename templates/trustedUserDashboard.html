@@ -176,7 +176,7 @@ function show_chart(id, scores, labels, username, last_post, num_posts, streak) 
             <h6 class="collapse-header">Users:</h6>
 
             {% for user in user_list %}
-              <a class="collapse-item" onclick="show_chart({{loop.index}}, {{scores[loop.index-1]}}, {{labels}}, '{{user_list[loop.index-1]}}', '{{last_post[loop.index-1]}}', '{{num_posts[loop.index-1]}}', {{streak[loop.index-1]}})">{{user}}</a>
+              <a class="collapse-item" onclick="show_chart({{loop.index}}, {{scores[loop.index-1]}}, {{labels[loop.index-1]}}, '{{user_list[loop.index-1]}}', '{{last_post[loop.index-1]}}', '{{num_posts[loop.index-1]}}', {{streak[loop.index-1]}})">{{user}}</a>
             {% endfor%}
 
           </div>
