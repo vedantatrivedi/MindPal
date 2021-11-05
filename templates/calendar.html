@@ -1,0 +1,180 @@
+{% include 'admin-layout.html' %}
+<!-- {{ ckeditor.load() }} -->
+      <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <h1 class="h3 text-gray-800 ml-3">Calendar</h1>
+          <p class="mb-4 ml-3">Visualize all your entries in one go.</a></p>
+          
+        <!-- Calendar -->
+          <div class="row justify-content-between">
+
+              <div class="card col-lg-12 calendar_main p-0">
+                    <div class="content">
+                      <div class="calendar-container card">
+                        <div class="calendar"> 
+                          <div class="year-header"> 
+                            <span class="text-dark left-button fa fa-chevron-left" id="prev"> </span> 
+                            <span class="year" id="label"></span> 
+                            <span class="text-dark right-button fa fa-chevron-right" id="next"> </span>
+                          </div> 
+                          <table class="months-table w-90"> 
+                            <tbody>
+                              <tr class="months-row">
+                                <td class="month">Jan</td> 
+                                <td class="month">Feb</td> 
+                                <td class="month">Mar</td> 
+                                <td class="month">Apr</td> 
+                                <td class="month">May</td> 
+                                <td class="month">Jun</td> 
+                                <td class="month">Jul</td>
+                                <td class="month">Aug</td> 
+                                <td class="month">Sep</td> 
+                                <td class="month">Oct</td>          
+                                <td class="month">Nov</td>
+                                <td class="month">Dec</td>
+                              </tr>
+                            </tbody>
+                          </table> 
+                          
+                          <table class="days-table w-100"> 
+                            <td class="day">Sun</td> 
+                            <td class="day">Mon</td> 
+                            <td class="day">Tue</td> 
+                            <td class="day">Wed</td> 
+                            <td class="day">Thu</td> 
+                            <td class="day">Fri</td> 
+                            <td class="day">Sat</td>
+                          </table> 
+                          <div class="frame"> 
+                            <table class="dates-table w-100"> 
+                              <tbody class="tbody">             
+                              </tbody> 
+                            </table>
+                          </div> 
+                        </div>
+                      </div>
+                      <div class="events-container">
+                      </div>
+                </div>
+              </div>
+
+
+          <!-- </div> -->
+
+          <!-- Content Row -->
+          <div class="col-lg-2 col-12 w-100 align-items-center">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <!-- <div class="row mb-4 my-5" style="margin-top: 100px;">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Current Streak</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ currStreak }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-angle-double-right fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Earnings (Monthly) Card Example -->
+            <!-- <div class="row" style="margin-top: 100px;">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Maximum Streak</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ maxStreak }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Earnings (Monthly) Card Example -->
+            <!-- <div class="col-lg-4 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Number of Trusted Users</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{trusted_users | length}}</div>
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="{{trusted_users | length}}" aria-valuemin="0" aria-valuemax="10"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>-->
+          </div> 
+
+  
+        <!-- </div> -->
+        <!-- /.container-fluid -->
+
+      </div>
+
+
+
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>MindPal - 2021</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="static/js/sb-admin-2.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="static/js/jquery.min.js"></script>
+  <!-- <script src="static/js/popper.js"></script> -->
+  <!-- <script src="static/js/bootstrap.min.js"></script> -->
+  <script src="static/js/main.js"></script>
+  <link rel="stylesheet" href="static/css/calendar_style.css"></link>
+
+</body>
+
+</html>

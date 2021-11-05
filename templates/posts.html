@@ -9,7 +9,7 @@
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <div class="row justify-content-between w-100">
-              <h1 class="h3 mb-0 text-gray-800">Journal Entries</h1>
+              <h1 class="h3 mb-0 text-gray-800 pl-2">Journal Entries</h1>
               <div class="btn col-3" data-bs-toggle="modal" data-bs-target="#prompts" style="background:#fff1ed;color:#df4e61;"><h6 class="font-weight-bold">Prompts</h6></div>
             </div>
           </div>
@@ -44,7 +44,7 @@
                 </div>
 
                 <!-- Card Body -->
-                <div class="card-body collapse show mb-2 row m-0" id="Posts" style="background-color: #edf1f5;"> 
+                <div class="card-body collapse mb-2 row m-0" id="Posts" style="background-color: #edf1f5;"> 
 
 
                     {% block content %}
@@ -170,7 +170,6 @@
 
   <script>
     
-
     var HttpClient = function() {
 
       this.get = function(aUrl, aCallback) {

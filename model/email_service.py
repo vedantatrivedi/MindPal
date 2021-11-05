@@ -125,10 +125,10 @@ def send_mail(fromaddr, toaddr, subject, message, refresh_token):
     server.quit()
 
 
-def send_welcome_mail(fromaddr, toaddr, user_name, refresh_token):
+def send_welcome_mail(fromaddr, toaddr, user_name, refresh_token, link):
 
     template = env.get_template('welcome_email.html')
-    output = template.render(username=user_name)
+    output = template.render(username = user_name, link = link)
     send_mail(fromaddr, toaddr, "Welcome to Mindpal!", output, refresh_token)
 
     return True

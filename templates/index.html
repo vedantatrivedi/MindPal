@@ -3,18 +3,40 @@
 {{ ckeditor.config(name='content') }}
  {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor/ckeditor.js')) }}
         <!-- Begin Page Content -->
-        <div class="container-fluid">
-
+          
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-          </div>
+          </div> -->
+    
+          <div class="welcome container">
+
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            </div>
+            
+            <div class="row shadow-lg m-3">
+    
+              <div class="col-md-6 col-12 text-center p-5">
+                <div class="display-4 text-gray-900 m-2"> Hey, {{username}}! </div>
+                <div class="h5 text-gray-600 m-5">
+                  “A personal journal is an ideal environment in which to become. It is a perfect place for you to think, feel, discover, explore, remember, and dream.”
+                </div>
+                <!-- <div class="h5 text-gray-600">Current Streak : {{currStreak}} days</div> -->
+              </div>
+    
+              <div class="col-md-6 col-12">
+                <img src="static/img/writing.gif" class="img-fluid">
+              </div>
+    
+            </div>
+    
 
           <!-- Content Row -->
-          <div class="row">
+          <!-- <div class="row"> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-lg-4 mb-4">
+            <!-- <div class="col-lg-4 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -28,10 +50,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-lg-4 mb-4">
+            <!-- <div class="col-lg-4 mb-4">
               <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -45,10 +67,10 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Earnings (Monthly) Card Example -->
-            <div class="col-lg-4 mb-4">
+            <!-- <div class="col-lg-4 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -72,14 +94,12 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
         <!-- Calendar -->
-          <div class="row justify-content-around">
+          <!-- <div class="row justify-content-around">
 
               <div class="card col-lg-8 col-md-12 mb-4 pr-0 calendar_main">
-                <!-- <div class="row"> -->
-                  <!-- <div class="col-md-12"> -->
                     <div class="content m-0">
                       <div class="calendar-container">
                         <div class="calendar"> 
@@ -122,17 +142,14 @@
                               </tbody> 
                             </table>
                           </div> 
-                          <!-- <button class="button" id="add-button">Add Event</button> -->
                         </div>
                       </div>
                       <div class="events-container">
                       </div>
-                  <!-- </div> -->
-                  <!-- </div> -->
                 </div>
-              </div>
+              </div> -->
 
-              <div class="col-lg-4 col-md-12 mb-4">
+              <!-- <div class="col-lg-4 col-md-12 mb-4">
                 <div class="card shadow" style="height: 500px;overflow-y: scroll;">
                   <div class="card-body border-left-warning pb-0">
                     <div class="row no-gutters align-items-center">
@@ -158,9 +175,9 @@
               </div>
   
 
-          </div>
+          </div> -->
 
-        </div>
+        <!-- </div> -->
         <!-- /.container-fluid -->
 
       </div>
@@ -203,10 +220,6 @@
 
   <!-- Page level custom scripts -->
   <script src="static/js/jquery.min.js"></script>
-  <script src="static/js/popper.js"></script>
-  <script src="static/js/bootstrap.min.js"></script>
-  <script src="static/js/main.js"></script>
-  <link rel="stylesheet" href="static/css/calendar_style.css"></link>
 
 </body>
 

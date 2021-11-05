@@ -27,14 +27,14 @@ def home():
                 if(oauth.checkOAuthToken()):
                     token = oauth.getOAuthToken()
                     trusted_users_emails = (users.getEmailofTrustedUsers(session['username']))
-                    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'],))
+                    send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', session['username'], token['refresh_token'], request.url_root))
                     send_mail_thread.start()
                     users.set_last_email_date(session['username'])
 
             # TODO : send Report if low score in last 15 days
 
 
-        return render_template('index.html', username=session["username"], trusted_users=trusted_users,currStreak = users.getCurrentStreak(session['username']),maxStreak = users.getMaxStreak(session['username']))
+        return render_template('index.html', username=session["username"], trusted_users=trusted_users, currStreak = users.getCurrentStreak(session['username']),maxStreak = users.getMaxStreak(session['username']))
     
     else:
 
@@ -55,7 +55,7 @@ def register():
         if(oauth.checkOAuthToken() and response):
             
             token = oauth.getOAuthToken()
-            send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'],))
+            send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', request.form['email'], request.form['name'], token['refresh_token'], request.url_root))
             send_mail_thread.start()
 
             return redirect(url_for("login"))
@@ -371,7 +371,7 @@ def resendMail():
 # @app.route('/send_mail', methods=["GET"])
 # def send_mail():
 #     token = oauth.getOAuthToken()
-#     send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token']))
+#     send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token'], request.url_root))
 #     send_mail_thread.start()
 #     return redirect(url_for("home"))
 
@@ -437,6 +437,16 @@ def maxStreak( ):
         'body': maxStreak,
     }
     return response
+
+@app.route('/calendar', methods=["GET"])
+def calendar():
+    if "username" in session:
+        return render_template('calendar.html', username=session["username"], currStreak = users.getCurrentStreak(session['username']),maxStreak = users.getMaxStreak(session['username']))
+    else:
+        return render_template('home-page.html')
+
+
+
 
 @app.route('/authorize', methods=["GET"])
 def authorize():
