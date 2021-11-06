@@ -1,5 +1,4 @@
 absl-py==0.12.0
-amqp==5.0.6
 apiclient==1.0.4
 apturl==0.5.2
 argon2-cffi==20.1.0
