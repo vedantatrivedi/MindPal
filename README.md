@@ -1,19 +1,53 @@
-
+  
 <h1 align="center">
   <br>
-  <a href="https://ibb.co/7jnsxZB"><img src="https://i.ibb.co/Dz90Pvm/9-L6pugn-Gk-Ea-R5-NQ9-A4-M2-Zu-P-4i-Sz2-O315f-MT90-Bf-NWls-AWk-Uh-MHupwaho4-AS5-YJZ-CA-w1200-h630-p.jpg" alt="9-L6pugn-Gk-Ea-R5-NQ9-A4-M2-Zu-P-4i-Sz2-O315f-MT90-Bf-NWls-AWk-Uh-MHupwaho4-AS5-YJZ-CA-w1200-h630-p" border="0"></a>
+  <a href="https://mindpal.herokuapp.com/"><img src="https://i.ibb.co/4R22KF4/Mind-Pal-Logo.png" alt="Mind-Pal-Logo" width = "300"></a>
   <br>
-  MindPal - The Smart Journal
-  <br>
+  MindPal
 </h1>
+<p align = "center">
+<a href="mindpal.herokuapp.com">
+    <img src="https://img.shields.io/badge/-View Live-green.svg"
+         alt="mindpal.herokuapp.com">
+  </a>
+  </p>
+<h4 align="center">Journal your thoughts, track your emotions and keep your loved ones updated.</h4>
 
-<h4 align="center">A journaling app which uses NLP to analyse the emotion from your entries and shares it with your loved ones.</h4>
-
-
-
+<p align="center">
+  <a href="https://www.hackerearth.com/challenges/hackathon/reimaginefuture-hackathon/">
+    <img src="https://img.shields.io/badge/IBM-Reimagine <Future> Hackathon-orange.svg"
+         alt="IBM Reimagine Future Hackathon">
+  </a>
+  
 </p>
 
-[![Example GIF](https://s3.gifyu.com/images/Webp.net-gifmaker8cc94ebb0cf95ecf.gif)](https://gifyu.com/image/DvUi)
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#download">Download</a> •
+  <a href="#credits">Credits</a> •
+  <a href="#related">Related</a> •
+  <a href="#license">License</a>
+</p>
+
+![screenshot](https://i.ibb.co/rZQKYP4/MindPal.gif)
+
+## Key Features
+
+* Full-featured Javascript _WYSIWYG text editor_.
+  - Allows you to type your journal entries or transcribes your speech using our voice2text feature.
+* Smart Insights on your entries.
+	* We use [IBM Watson Natural Language Understanding](https://www.ibm.com/in-en/cloud/watson-natural-language-understanding) to extract the emotions and the sentiment of journal entries, allowing them to understand their thoughts and emotions better.
+	* The scores are visualised in a dashboard allowing you to easily understand patterns in your mental health.
+* Trusted Users
+  - Keep your loved ones updated on your mental health by allowing them to see your visualised scores from your entries - keeping them stress free :)
+* Mailing System
+	* Add trusted users seamlessly by entering their name, username and email id on your account - they will receive an email from us to set their password, and they can get started right away!
+	* It can be difficult to communicate when we feel low - which is why we send an email to your trusted users when your emotional scores are consistently low. Letting them know decreases the communication gap, and also improves relationships.
+* Calendar 
+	* Maintain consistency and easily navigate through your posts using our calendar based visualisation - allowing you to view all entries from a day with just one click.
+* Mental Health Exercises
+	* We include a guide to Grounding Exercises for those unfortunate moments of anxiety and give you a list of activities to do when you feel low, to make sure that you are well in the troughs.
 
 
 ## How To Use
@@ -22,20 +56,32 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [P
 
 ```bash
 # Clone this repository
-git clone https://github.com/vedantatrivedi/Muse.git
+$ git clone https://github.com/vedantatrivedi/MindPal.git
 
 # Go into the repository
-cd Muse
+$ cd MindPal
 
-# Install Dependencies
-pip3 install -r requirements.txt
+# Install dependencies
+$ python3 install -r requirements.txt
 
 # Run the app
-python3 app.py
+$ python3 app.py
 ```
+## Tools/ Technologies
 
 
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+- [Bootstrap](https://getbootstrap.com/)
+- [CKEditor](https://ckeditor.com/)
+- [Calendar.js](https://fullcalendar.io/)
+-  [Chartjs](https://www.chartjs.org/)
+- [MongoDB](https://www.mongodb.com/)
 
 
+## Contributors
 
+- [Vedanta Trivedi](https://github.com/vedantatrivedi) 
+- [Jinit Shah](https://github.com/jinit24) 
+- [Mansi Parashar](https://github.com/mansiparashar00)
+- [Syed Mujtaba Jafri](https://github.com/mujtaba1747)
 
