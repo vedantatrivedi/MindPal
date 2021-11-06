@@ -2,7 +2,7 @@ cachetools==4.2.4
 certifi==2021.10.8
 charset-normalizer==2.0.7
 click==8.0.3
-dataclasses==0.8
+dataclasses==0.6
 dnspython==2.1.0
 Flask==2.0.2
 Flask-CKEditor==0.4.6
