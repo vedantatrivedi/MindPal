@@ -6,7 +6,7 @@ from helpers.hashpass import *
 from helpers.mailer import *
 from helpers.nlp import *
 from bson import json_util, ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 import json
 import numpy as np
@@ -185,29 +185,33 @@ def set_last_email_date(username):
         db.users.update({"username": username}, {"$set": {"last_email": datetime.today()}})
     
 def getMaxStreak(username):
-    curStreak = 0
-    maxStreak = 0
-    curTime = -1
 
-    for post in getPost(username):
-        # print (post[0])
+    curStreak, maxStreak, curTime = 0, 0, -1
+    posts = getPost(username)
+
+    dates = []
+    for post in posts:
+        dates.append(post[0].date())
+
+    dates = sorted(list(set(dates)),reverse=True)
+
+    for date in dates:
+
         if curTime == -1:
-            curTime = post[0]
+            curTime = date
             curStreak += 1
 
-        elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
-            print(curTime, post[0])
+        elif (curTime == date):
             curStreak += 1
-            curTime = post[0]
 
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
         else:
-            if curStreak > maxStreak:
-                maxStreak = curStreak
-            curStreak = 1
-            curTime = post[0]
+            currStreak = 1
+            maxStreak = max(maxStreak, curStreak)
+            curTime = date
+            # continue
+
+        curTime = curTime - timedelta(days = 1)
+        print(curStreak, maxStreak, curTime, date)
 
     if curStreak > maxStreak:
         maxStreak = curStreak
@@ -216,24 +220,28 @@ def getMaxStreak(username):
 
 def getCurrentStreak(username):
     
-    curStreak = 0
-    curTime = -1
+    curStreak, curTime = 0, -1
+    posts = getPost(username)
 
-    for post in getPost( username):
+    dates = []
+    for post in posts:
+        dates.append(post[0].date())
+
+    dates = sorted(list(set(dates)),reverse=True)
+
+    for date in dates:
+
         if curTime == -1:
-            curTime = post[0]
+            curTime = date
             curStreak += 1
 
-        elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
+        elif (curTime == date):
             curStreak += 1
-            curTime = post[0]
-
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
 
         else:
             break
+
+        curTime = curTime - timedelta(days = 1)
         
     return curStreak
 

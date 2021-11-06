@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 import json
 import google_auth_oauthlib.flow
 import threading
@@ -445,7 +445,12 @@ def calendar():
     else:
         return render_template('home-page.html')
 
-
+@app.route('/exercises', methods=["GET"])
+def exercises():
+    if "username" in session:
+        return render_template('exercises.html')
+    else:
+        return render_template('home-page.html')
 
 
 @app.route('/authorize', methods=["GET"])
