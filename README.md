@@ -6,7 +6,7 @@
   MindPal
 </h1>
 <p align = "center">
-<a href="mindpal.herokuapp.com">
+<a href="https://mindpal.herokuapp.com/">
     <img src="https://img.shields.io/badge/-View Live-green.svg"
          alt="mindpal.herokuapp.com">
   </a>
@@ -24,10 +24,8 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#download">Download</a> •
-  <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
-  <a href="#license">License</a>
+  <a href="#Tools/ Technologies">Tools and Technologies</a> •
+  <a href="#Contributors">Contributors</a> 
 </p>
 
 ![screenshot](https://i.ibb.co/rZQKYP4/MindPal.gif)
@@ -67,7 +65,7 @@ $ python3 install -r requirements.txt
 # Run the app
 $ python3 app.py
 ```
-## Tools/ Technologies
+## Tools / Technologies
 
 
 - [Flask](https://flask.palletsprojects.com/en/2.0.x/)
