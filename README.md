@@ -24,7 +24,7 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
-  <a href="#Tools/ Technologies">Tools and Technologies</a> •
+  <a href="#tools--technologies">Tools and Technologies</a> •
   <a href="#Contributors">Contributors</a> 
 </p>
 
