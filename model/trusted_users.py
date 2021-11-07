@@ -2,7 +2,6 @@ from app import app
 from flask import request, session
 from helpers.database import *
 from helpers.hashpass import *
-from helpers.mailer import *
 from helpers.nlp import *
 from bson import json_util, ObjectId
 from datetime import datetime
