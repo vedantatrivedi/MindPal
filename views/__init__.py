@@ -86,7 +86,7 @@ def addPosts():
 
     return redirect(url_for("Posts"))
 
-
+# Get posts for a user
 @app.route('/getPosts', methods=["Get"])
 def getPosts():
 
@@ -108,6 +108,7 @@ def getPosts():
 
     return response
 
+# Update posts for a user
 @app.route('/updatePosts', methods=["Get"])
 def updatePosts():
 
@@ -140,7 +141,7 @@ def deletePost():
 
     return "200"
 
-
+# Endpoint for posts page 
 @app.route('/posts', methods=["Get"])
 def Posts():
 
@@ -248,21 +249,6 @@ def forgotpassword():
 def errorpage():
     return render_template("404.html")
 
-# Blank Page
-@app.route('/blank', methods=["GET"])
-def blank():
-    return render_template('blank.html')
-
-# Buttons Page
-@app.route('/buttons', methods=["GET"])
-def buttons():
-    return render_template("buttons.html")
-
-# Cards Page
-@app.route('/cards', methods=["GET"])
-def cards():
-    return render_template('cards.html')
-
 # Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
@@ -275,22 +261,7 @@ def charts():
     print(emotion_percentages)
     return render_template("charts.html", pieChartLabels = emotion_labels,emotions = emotion_percentages,scores=scores, labels=labels, user=session["username"])
 
-# Tables Page
-@app.route('/tables', methods=["GET"])
-def tables():
-    return render_template("tables.html")
-
-# Utilities-animation
-@app.route('/utilities-animation', methods=["GET"])
-def utilitiesanimation():
-    return render_template("utilities-animation.html")
-
-# Utilities-border
-@app.route('/utilities-border', methods=["GET", "POST"])
-def utilitiesborder():
-    return render_template("utilities-border.html")
-
-#Utilities-color
+# Adding a trusted user
 @app.route('/trusted-user', methods=["GET","POST"])
 def trustedUser():
 
@@ -366,14 +337,6 @@ def resendMail():
 
     return "200"
 
-
-# Testing endpoint for sending mail 
-# @app.route('/send_mail', methods=["GET"])
-# def send_mail():
-#     token = oauth.getOAuthToken()
-#     send_mail_thread = threading.Thread(target=email_service.send_welcome_mail, args=('dornumofficial@gmail.com', 'dornumofficial@gmail.com', "SA", token['refresh_token'], request.url_root))
-#     send_mail_thread.start()
-#     return redirect(url_for("home"))
 
 @app.route( '/currentStreak', methods=[ "Get" ] )
 def currentStreak():
@@ -493,7 +456,7 @@ def oauth2callback():
     # Use the authorization server's response to fetch the OAuth 2.0 tokens.
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
-    credentials = credentials_to_dict(flow.credentials)
+    credentials = oauth.credentials_to_dict(flow.credentials)
     oauth.putOAuthToken(credentials)
 
     return redirect('/')
@@ -524,10 +487,4 @@ def set_password():
 def getEntries():
     return json.dumps(users.getPost(session["username"]),indent=4, sort_keys=True, default=str)
 
-def credentials_to_dict(credentials):
-    return {'token': credentials.token,
-            'refresh_token': credentials.refresh_token,
-            'token_uri': credentials.token_uri,
-            'client_id': credentials.client_id,
-            'client_secret': credentials.client_secret,
-            'scopes': credentials.scopes}
+
