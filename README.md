@@ -59,6 +59,11 @@ $ git clone https://github.com/vedantatrivedi/MindPal.git
 # Go into the repository
 $ cd MindPal
 
+# (Recommended but optional) Make a virtual enviroment and activate it
+$ python3 -m pip install --user virtualenv 
+$ python3 -m venv env
+$ source env/bin/activate
+
 # Install dependencies
 $ python3 install -r requirements.txt
 
