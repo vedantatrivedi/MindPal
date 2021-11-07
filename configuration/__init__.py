@@ -2,7 +2,7 @@ from app import app
 import urllib
 
 # secret key for user session
-app.secret_key = "90129wq#@#}{_)_+EWW}E{EW{E19001209uufdjdbf@@!!FDFDFDFSQQ@!@"
+app.secret_key = "ITSASECRET"
 
 #setting up mail
 app.config['MAIL_SERVER']='' #mail server
