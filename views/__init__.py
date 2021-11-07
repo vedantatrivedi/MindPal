@@ -10,6 +10,7 @@ CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.send",
           "https://www.googleapis.com/auth/drive.metadata.readonly"]
 
+app.secret_key = "ITSASECRET"
 
 @app.route('/', methods=["GET"])
 def home():
