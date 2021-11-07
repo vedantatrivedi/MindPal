@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
 from datetime import date, datetime, timezone
-import json
+import json, os
 import google_auth_oauthlib.flow
 import threading
 
@@ -457,8 +457,7 @@ def exercises():
 def authorize():
 
     # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE, scopes=SCOPES)
+    flow = google_auth_oauthlib.flow.Flow.from_client_config(os.environ['CLIENT_SECRETS'], scopes=SCOPES)
 
     # The URI created here must exactly match one of the authorized redirect URIs
     # for the OAuth 2.0 client, which you configured in the API Console. If this
