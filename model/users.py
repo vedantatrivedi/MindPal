@@ -264,8 +264,9 @@ def getScoresForChart(username):
 def getPieChartData(username):
     
     posts = getPost(username,limit = 15)
+    
     if(len(posts) == 0):
-        return false
+        return {"Sadness": 20, "Joy": 20, "Fear":20, "Disgust": 20, "Anger": 20}
     
     emotions_list = ['sadness', 'joy', 'fear', 'disgust', 'anger']
     dic = {}
@@ -283,6 +284,10 @@ def getPieChartData(username):
     total = 0
     for emotion in emotions_list:
         total += dic[emotion]
+
+    print(total, dic)
+    if(total == 0):
+        return {"Sadness": 20, "Joy": 20, "Fear":20, "Disgust": 20, "Anger": 20}
 
     for emotion in emotions_list:
         dic[emotion] = 100 * (dic[emotion] / total)
