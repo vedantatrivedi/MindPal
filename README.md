@@ -50,7 +50,8 @@
 ## Services that need to be setup
 The deployed version <a href="https://mindpal.herokuapp.com/">link</a> has everything setup and is fully functional. 
 
-The required variables for the following are environment variables. All the necessary edits are to be made in views/__init.py, model/email_service.py, helpers/nlp.py and helpers/database.py
+For personal use, the following services need to be set up. Variables like connection string and client ID are added as environment variables for security purposes. The variables are used in views/__init.py, model/email_service.py, helpers/nlp.py, and helpers/database.py.
+
 1. Google OAuth for Email
 2. MongoDB
 3. IBM NLP
