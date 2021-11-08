@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from app import app
 from model import email_service, trusted_users, oauth, users
-from datetime import date, datetime, timezone
+from datetime import  datetime
 import json, os
 import google_auth_oauthlib.flow
 import threading
@@ -88,29 +88,17 @@ def addPosts():
     return redirect(url_for("Posts"))
 
 # Get posts for a user
-@app.route('/getPosts', methods=["Get"])
+@app.route('/getPosts', methods=["GET"])
 def getPosts():
 
     if('username' not in session):
         return redirect(url_for("home"))
 
-    response = {
-        'status': 400,
-        'body': '',
-    }
+    return json.dumps(users.getPost(session["username"]),indent=4, sort_keys=True, default=str)
 
-    try:
-        response = {
-            'status': 200,
-            'body': json.dumps(users.getPost(session["username"])),
-        }
-    except:
-        pass
-
-    return response
 
 # Update posts for a user
-@app.route('/updatePosts', methods=["Get"])
+@app.route('/updatePosts', methods=["GET"])
 def updatePosts():
 
     if('username' not in session):
@@ -126,7 +114,7 @@ def updatePosts():
 
     return "200"
 
-@app.route('/deletePost', methods=["Get"])
+@app.route('/deletePost', methods=["GET"])
 def deletePost():
 
     if('username' not in session):
@@ -143,7 +131,7 @@ def deletePost():
     return "200"
 
 # Endpoint for posts page 
-@app.route('/posts', methods=["Get"])
+@app.route('/posts', methods=["GET"])
 def Posts():
 
     if('username' not in session):
@@ -339,68 +327,68 @@ def resendMail():
     return "200"
 
 
-@app.route( '/currentStreak', methods=[ "Get" ] )
-def currentStreak():
+# @app.route( '/currentStreak', methods=[ "GET" ] )
+# def currentStreak():
 
-    curStreak = 0
-    curTime = -1
+#     curStreak = 0
+#     curTime = -1
 
-    for post in users.getPost( session[ "username" ] ):
-        if curTime == -1:
-            curTime = post[0]
-            curStreak += 1
+#     for post in users.getPost( session[ "username" ] ):
+#         if curTime == -1:
+#             curTime = post[0]
+#             curStreak += 1
 
-        elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
-            curStreak += 1
-            curTime = post[0]
+#         elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
+#             curStreak += 1
+#             curTime = post[0]
 
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
+#         elif ( curTime - post[0] ).days < 1:
+#             curTime = post[0]
+#             continue
 
-        else:
-            break
+#         else:
+#             break
 
-    response = {
-        'status': 200,
-        'body': curStreak,
-    }
-    return response
+#     response = {
+#         'status': 200,
+#         'body': curStreak,
+#     }
+#     return response
 
-@app.route( '/maxStreak', methods = [ "Get" ] )
-def maxStreak( ):
-    curStreak = 0
-    maxStreak = 0
-    curTime = -1
+# @app.route( '/maxStreak', methods = [ "GET" ] )
+# def maxStreak( ):
+#     curStreak = 0
+#     maxStreak = 0
+#     curTime = -1
 
-    for post in users.getPost(session["username"]):
-        # print (post[0])
-        if curTime == -1:
-            curTime = post[0]
-            curStreak += 1
+#     for post in users.getPost(session["username"]):
+#         # print (post[0])
+#         if curTime == -1:
+#             curTime = post[0]
+#             curStreak += 1
 
-        elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
-            print(curTime, post[0])
-            curStreak += 1
-            curTime = post[0]
+#         elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
+#             print(curTime, post[0])
+#             curStreak += 1
+#             curTime = post[0]
 
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
-        else:
-            if curStreak > maxStreak:
-                maxStreak = curStreak
-            curStreak = 1
-            curTime = post[0]
+#         elif ( curTime - post[0] ).days < 1:
+#             curTime = post[0]
+#             continue
+#         else:
+#             if curStreak > maxStreak:
+#                 maxStreak = curStreak
+#             curStreak = 1
+#             curTime = post[0]
 
-    if curStreak > maxStreak:
-        maxStreak = curStreak
+#     if curStreak > maxStreak:
+#         maxStreak = curStreak
 
-    response = {
-        'status': 200,
-        'body': maxStreak,
-    }
-    return response
+#     response = {
+#         'status': 200,
+#         'body': maxStreak,
+#     }
+#     return response
 
 @app.route('/calendar', methods=["GET"])
 def calendar():
@@ -483,8 +471,5 @@ def set_password():
         trusted_users.TrustedUserSetPass()
         return redirect(url_for("trustedUser"))
 
-@app.route('/getEntries',methods = ["GET"])
-def getEntries():
-    return json.dumps(users.getPost(session["username"]),indent=4, sort_keys=True, default=str)
 
 

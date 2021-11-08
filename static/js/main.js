@@ -221,7 +221,7 @@ function httpGet(theUrl)
 // Checks if a specific date has any events
 function check_events(day, month, year) {
     var events = [];
-    var data = httpGet("/getEntries")
+    var data = httpGet("/getPosts")
     var posts = JSON.parse(data)
     for(var i=0;i<posts.length;i++){
         var curr_post = posts[i]
