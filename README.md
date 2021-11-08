@@ -32,7 +32,7 @@
 
 ## Key Features
 
-* Full-featured Javascript _WYSIWYG text editor_.
+* Full-featured Javascript text editor.
   - Allows you to type your journal entries or transcribes your speech using our voice2text feature.
 * Smart Insights on your entries.
 	* We use [IBM Watson Natural Language Understanding](https://www.ibm.com/in-en/cloud/watson-natural-language-understanding) to extract the emotions and the sentiment of journal entries, allowing them to understand their thoughts and emotions better.
@@ -47,7 +47,7 @@
 * Mental Health Exercises
 	* We include a guide to Grounding Exercises for those unfortunate moments of anxiety and give you a list of activities to do when you feel low, to make sure that you are well in the troughs.
 
-## Services that need to be setup
+## Services to setup
 The deployed version <a href="https://mindpal.herokuapp.com/">link</a> has everything setup and is fully functional. 
 
 For personal use, the following services need to be set up. Variables like connection string and client ID are added as environment variables for security purposes. The variables are used in views/__init.py, model/email_service.py, helpers/nlp.py, and helpers/database.py.
