@@ -47,6 +47,15 @@
 * Mental Health Exercises
 	* We include a guide to Grounding Exercises for those unfortunate moments of anxiety and give you a list of activities to do when you feel low, to make sure that you are well in the troughs.
 
+## Services that need to be setup
+The deployed version <a href="https://mindpal.herokuapp.com/">link</a> has everything setup and is fully functional. 
+
+The required variables for the following are environment variables. All the necessary edits are to be made in views/__init.py, model/email_service.py, helpers/nlp.py and helpers/database.py
+### 1. Google OAuth for Email
+
+### 2. MongoDB
+
+### 3. IBM NLP
 
 ## How To Use
 
