@@ -51,12 +51,9 @@
 The deployed version <a href="https://mindpal.herokuapp.com/">link</a> has everything setup and is fully functional. 
 
 The required variables for the following are environment variables. All the necessary edits are to be made in views/__init.py, model/email_service.py, helpers/nlp.py and helpers/database.py
-### 1. Google OAuth for Email
-
-### 2. MongoDB
-
-### 3. IBM NLP
-
+1. Google OAuth for Email
+2. MongoDB
+3. IBM NLP
 ## How To Use
 
 To clone and run this application, you'll need [Git](https://git-scm.com) and [Python 3 or above](https://www.python.org/downloads/) installed on your computer. From your command line:
