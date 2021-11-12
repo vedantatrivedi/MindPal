@@ -12,8 +12,11 @@ import os
 
 GOOGLE_ACCOUNTS_BASE_URL = 'https://accounts.google.com'
 REDIRECT_URI = 'https://mindpal.herokuapp.com/'
-GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
-GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
+# GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
+# GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
+
+GOOGLE_CLIENT_ID = '526537437699-t8hafs917rs1np2kgu6ibh84vra68neq.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = 'EcWvRZxscnVeXTEnWivMTuZW'
 
 
 env = Environment(loader=FileSystemLoader(
@@ -127,17 +130,18 @@ def send_mail(fromaddr, toaddr, subject, message, refresh_token):
 def send_welcome_mail(fromaddr, toaddr, user_name, refresh_token, link):
 
     template = env.get_template('welcome_email.html')
-    output = template.render(username = user_name, link = link)
+    output = template.render(username=user_name, link=link)
     send_mail(fromaddr, toaddr, "Welcome to Mindpal!", output, refresh_token)
 
     return True
+
 
 def send_set_pass_mail(fromaddr, toaddr, trusted_username, username, link, refresh_token):
 
     # print("SEND MAIL", link)
     template = env.get_template('trusted_user_set_email.html')
-    output = template.render(trusted_username = trusted_username, username = username, link = link)
+    output = template.render(
+        trusted_username=trusted_username, username=username, link=link)
     send_mail(fromaddr, toaddr, "Welcome to Mindpal!", output, refresh_token)
 
     return True
-

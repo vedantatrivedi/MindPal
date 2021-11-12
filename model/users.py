@@ -12,6 +12,7 @@ import numpy as np
 
 # Post structure - [Date, Post, Score]
 
+
 def checkloginpassword():
 
     username = request.form["username"]
@@ -65,8 +66,10 @@ def registerUser():
         db.users.insert(user_data)
         return True
 
+
 def get_score(post):
     return get_sentiment(post)
+
 
 def addPost(user, post):
     score = get_sentiment(post)
@@ -75,7 +78,8 @@ def addPost(user, post):
                     "$push": {"posts": [today, post, score]}})
     print("Post Added")
 
-def getPost(username, limit = None):
+
+def getPost(username, limit=None):
 
     print("Posts retrieved")
     myquery = {"username": username}
@@ -91,6 +95,7 @@ def getPost(username, limit = None):
 
     return items[::-1]
 
+
 def updatePost(username, new_content, id):
 
     userDoc = db.users.find_one({"username": username})
@@ -101,14 +106,16 @@ def updatePost(username, new_content, id):
     post[1] = new_content
     post[2] = get_sentiment(new_content)
 
-    db.users.update({"username": username}, { "$set": { 'posts.'+str(index) : post}})
+    db.users.update({"username": username}, {
+                    "$set": {'posts.'+str(index): post}})
     return post[2]
+
 
 def removePost(username, post, id):
 
     userDoc = db.users.find_one({"username": username})
     length = len(userDoc['posts'])
-    index  = length - int(id)
+    index = length - int(id)
 
     post = userDoc["posts"][index]
     db.users.update({"username": username}, {'$pull': {"posts": post}})
@@ -127,17 +134,20 @@ def getScores(username):
 
     return scores, dates
 
+
 def getTrustedUsers(username):
-    
+
     userDoc = db.users.find_one({"username": username})
     trusted_users = userDoc.get('trustedUser')
     if(trusted_users == None):
         return []
-    
+
     unique_list = list(set(userDoc.get('trustedUser')))
-    db.users.update({"username": username}, { "$set": { 'trustedUser' : unique_list}})
+    db.users.update({"username": username}, {
+                    "$set": {'trustedUser': unique_list}})
 
     return unique_list
+
 
 def getTrustedInfo(trusted_user_list):
 
@@ -149,15 +159,18 @@ def getTrustedInfo(trusted_user_list):
 
     return info
 
+
 def removeTrustedUser(username, trusted_user):
 
     userDoc = db.users.find_one({"username": username})
     user_id = str(userDoc['_id'])
 
     print(username, trusted_user, user_id)
-    db.users.update({"username": username}, {'$pull': {"trustedUser": trusted_user}})
-    db.trusted.update({"username": trusted_user}, {'$pull': {"trusted-by-id": user_id}})
-    
+    db.users.update({"username": username}, {
+                    '$pull': {"trustedUser": trusted_user}})
+    db.trusted.update({"username": trusted_user}, {
+                      '$pull': {"trusted-by-id": user_id}})
+
 
 def getEmailofTrustedUsers(username):
 
@@ -170,18 +183,23 @@ def getEmailofTrustedUsers(username):
 
     return email_list
 
+
 def get_last_email_date(username):
 
     userDoc = db.users.find_one({"username": username})
     return userDoc.get('last_email')
 
+
 def set_last_email_date(username):
 
     if(get_last_email_date(username) == None):
-        db.users.update({"username": username}, {"$set": {"last_email": datetime.today()}})
+        db.users.update({"username": username}, {
+                        "$set": {"last_email": datetime.today()}})
     else:
-        db.users.update({"username": username}, {"$set": {"last_email": datetime.today()}})
-    
+        db.users.update({"username": username}, {
+                        "$set": {"last_email": datetime.today()}})
+
+
 def getMaxStreak(username):
 
     curStreak, maxStreak, curTime = 0, 0, -1
@@ -191,7 +209,7 @@ def getMaxStreak(username):
     for post in posts:
         dates.append(post[0].date())
 
-    dates = sorted(list(set(dates)),reverse=True)
+    dates = sorted(list(set(dates)), reverse=True)
 
     for date in dates:
 
@@ -208,7 +226,7 @@ def getMaxStreak(username):
             curTime = date
             # continue
 
-        curTime = curTime - timedelta(days = 1)
+        curTime = curTime - timedelta(days=1)
         print(curStreak, maxStreak, curTime, date)
 
     if curStreak > maxStreak:
@@ -216,8 +234,9 @@ def getMaxStreak(username):
 
     return maxStreak
 
+
 def getCurrentStreak(username):
-    
+
     curStreak, curTime = 0, -1
     posts = getPost(username)
 
@@ -225,7 +244,7 @@ def getCurrentStreak(username):
     for post in posts:
         dates.append(post[0].date())
 
-    dates = sorted(list(set(dates)),reverse=True)
+    dates = sorted(list(set(dates)), reverse=True)
 
     for date in dates:
 
@@ -239,8 +258,8 @@ def getCurrentStreak(username):
         else:
             break
 
-        curTime = curTime - timedelta(days = 1)
-        
+        curTime = curTime - timedelta(days=1)
+
     return curStreak
 
 
@@ -260,12 +279,13 @@ def getScoresForChart(username):
 
 
 def getPieChartData(username):
-    
-    posts = getPost(username,limit = 15)
-    
+
+    posts = getPost(username, limit=15)
+
     if(len(posts) == 0):
-        return {"Sadness": 20, "Joy": 20, "Fear":20, "Disgust": 20, "Anger": 20}
-    
+        return {"Sadness": 20, "Joy": 20, 
+                "Fear": 20, "Disgust": 20, "Anger": 20}
+
     emotions_list = ['sadness', 'joy', 'fear', 'disgust', 'anger']
     dic = {}
 
@@ -285,22 +305,23 @@ def getPieChartData(username):
 
     print(total, dic)
     if(total == 0):
-        return {"Sadness": 20, "Joy": 20, "Fear":20, "Disgust": 20, "Anger": 20}
+        return {"Sadness": 20, "Joy": 20, "Fear": 20, "Disgust": 20, "Anger": 20}
 
     for emotion in emotions_list:
         dic[emotion] = 100 * (dic[emotion] / total)
 
-    return_data = {"Sadness": dic['sadness'], "Joy": dic['joy'], "Fear": dic['fear'], "Disgust": dic['disgust'],"Anger": dic['anger'] }
+    return_data = {"Sadness": dic['sadness'], "Joy": dic['joy'],
+                   "Fear": dic['fear'], "Disgust": dic['disgust'], "Anger": dic['anger']}
     return return_data
 
 
 def check_low_scores(username):
 
-    posts = getPost(username, limit = 15)
+    posts = getPost(username, limit=15)
 
     if(len(posts) == 0):
         return False
-    
+
     mean_score = 0
     for i in range(min(len(posts), 15)):
         mean_score += posts[i][2]

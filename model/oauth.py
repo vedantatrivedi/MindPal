@@ -13,6 +13,7 @@ def checkOAuthToken():
 
     return True
 
+
 def putOAuthToken(credentials):
 
     # Clear older entries
@@ -25,6 +26,7 @@ def putOAuthToken(credentials):
 def getOAuthToken():
     return oauthdb.OAuth_tokens.find_one()
 
+
 def credentials_to_dict(credentials):
     return {'token': credentials.token,
             'refresh_token': credentials.refresh_token,
@@ -32,5 +34,3 @@ def credentials_to_dict(credentials):
             'client_id': credentials.client_id,
             'client_secret': credentials.client_secret,
             'scopes': credentials.scopes}
-
-
