@@ -339,69 +339,6 @@ def resendMail():
     return "200"
 
 
-@app.route( '/currentStreak', methods=[ "Get" ] )
-def currentStreak():
-
-    curStreak = 0
-    curTime = -1
-
-    for post in users.getPost( session[ "username" ] ):
-        if curTime == -1:
-            curTime = post[0]
-            curStreak += 1
-
-        elif ( curTime - post[0] ).days >= 1 and ( curTime - post[0] ).days < 2:
-            curStreak += 1
-            curTime = post[0]
-
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
-
-        else:
-            break
-
-    response = {
-        'status': 200,
-        'body': curStreak,
-    }
-    return response
-
-@app.route( '/maxStreak', methods = [ "Get" ] )
-def maxStreak( ):
-    curStreak = 0
-    maxStreak = 0
-    curTime = -1
-
-    for post in users.getPost(session["username"]):
-        # print (post[0])
-        if curTime == -1:
-            curTime = post[0]
-            curStreak += 1
-
-        elif (curTime - post[0]).days >= 1 and (curTime - post[0]).days < 2:
-            print(curTime, post[0])
-            curStreak += 1
-            curTime = post[0]
-
-        elif ( curTime - post[0] ).days < 1:
-            curTime = post[0]
-            continue
-        else:
-            if curStreak > maxStreak:
-                maxStreak = curStreak
-            curStreak = 1
-            curTime = post[0]
-
-    if curStreak > maxStreak:
-        maxStreak = curStreak
-
-    response = {
-        'status': 200,
-        'body': maxStreak,
-    }
-    return response
-
 @app.route('/calendar', methods=["GET"])
 def calendar():
     if "username" in session:
