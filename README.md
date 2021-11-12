@@ -62,10 +62,14 @@ $ cd MindPal
 # (Recommended but optional) Make a virtual enviroment and activate it
 $ python3 -m pip install --user virtualenv 
 $ python3 -m venv env
+# (For MacOS and Linux)
 $ source env/bin/activate
+# (For Windows)
+$ env\Scripts\activate.bat
+
 
 # Install dependencies
-$ python3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 
 # Run the app
 $ python3 app.py
