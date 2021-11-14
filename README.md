@@ -72,7 +72,7 @@ $ python3 -m venv env
 $ source env/bin/activate
 
 # Install dependencies
-$ python3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 
 # Run the app
 $ python3 app.py
