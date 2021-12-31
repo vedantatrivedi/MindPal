@@ -13,13 +13,7 @@
   </p>
 <h4 align="center">Journal your thoughts, track your emotions and keep your loved ones updated.</h4>
 
-<p align="center">
-  <a href="https://www.hackerearth.com/challenges/hackathon/reimaginefuture-hackathon/">
-    <img src="https://img.shields.io/badge/IBM-Reimagine <Future> Hackathon-orange.svg"
-         alt="IBM Reimagine Future Hackathon">
-  </a>
-  
-</p>
+
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
