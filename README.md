@@ -83,6 +83,4 @@ $ python3 app.py
 
 - [Vedanta Trivedi](https://github.com/vedantatrivedi) 
 - [Jinit Shah](https://github.com/jinit24) 
-- [Mansi Parashar](https://github.com/mansiparashar00)
-- [Syed Mujtaba Jafri](https://github.com/mujtaba1747)
 
